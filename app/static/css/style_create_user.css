@@ -1,0 +1,50 @@
+/* ✅ Conteneur principal */
+.create-user-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* ✅ Titre */
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 15px;
+}
+
+/* ✅ Style des champs */
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f8f8f8;
+}
+
+/* ✅ Bouton */
+.create-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.create-button:hover {
+    background-color: darkgreen;
+}

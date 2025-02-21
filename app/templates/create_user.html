@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Créer un utilisateur - Mayekawa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_create_user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="create-user-container">
+    <h2>Créer un nouvel utilisateur</h2>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ form.email(class="input-field", placeholder="Adresse email") }}
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">Prénom</label>
+            {{ form.first_name(class="input-field", placeholder="Prénom") }}
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Nom</label>
+            {{ form.last_name(class="input-field", placeholder="Nom de famille") }}
+        </div>
+
+        <div class="form-group">
+            <label for="mobile_number">Téléphone</label>
+            {{ form.mobile_number(class="input-field", placeholder="Numéro de téléphone") }}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            {{ form.password(class="input-field", placeholder="Mot de passe") }}
+        </div>
+
+        <div class="form-group">
+            <label for="access_level">Niveau d'accès</label>
+            {{ form.access_level(class="input-field", placeholder="1, 2 ou 3") }}
+        </div>
+
+        {{ form.submit(class="create-button") }}
+    </form>
+</div>
+{% endblock %}

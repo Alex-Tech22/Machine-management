@@ -7,6 +7,11 @@
 {% endblock %}
 
 {% block content %}
+{% if user.access_level in [2, 3] %}
+    <a href="{{ url_for('main.create_user') }}">
+        <button class="create-user-btn">Créer un utilisateur</button>
+    </a>
+{% endif %}
 <div class="container">
     <h1 class="title">Liste des clients</h1>
     <div class="client-list">
