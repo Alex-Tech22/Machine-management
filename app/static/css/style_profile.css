@@ -1,0 +1,87 @@
+/* ✅ Styles généraux du profil */
+.profile-container {
+    background: white;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* ✅ Titre de la section */
+h2 {
+    color: #d32f2f;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ✅ Styles pour les informations personnelles */
+p {
+    font-size: 16px;
+    color: #333;
+    margin: 8px 0;
+}
+
+/* ✅ Mise en valeur des labels (ex: Nom, Email...) */
+strong {
+    color: #000;
+    font-weight: bold;
+}
+
+/* ✅ Container des boutons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* ✅ Styles pour les boutons */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+}
+
+/* ✅ Bouton Modifier */
+.modify {
+    background-color: #1976d2;
+    color: white;
+}
+
+.modify:hover {
+    background-color: #135ba1;
+}
+
+/* ✅ Bouton Déconnexion */
+.logout {
+    background-color: red;
+    color: white;
+}
+
+.logout:hover {
+    background-color: darkred;
+}
+
+/* Responsive : Ajustement pour petits écrans */
+@media (max-width: 600px) {
+    .profile-container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

@@ -1,33 +1,19 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Clients - Mayekawa</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <div class="header">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
+{% block title %}Clients - Mayekawa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Liste des clients</h1>
+    <div class="client-list">
+        <button class="client-btn">Client 1</button>
+        <button class="client-btn">Client 2</button>
+        <button class="client-btn">Client 3</button>
     </div>
-
-    <div class="container">
-        <div class="sidebar">
-            <h2>Liste des clients</h2>
-            <ul class="client-list">
-                <li><button>Client 1</button></li>
-                <li><button>Client 2</button></li>
-                <li><button>Client 3</button></li>
-            </ul>
-            <button class="add-client">Ajouter un client</button>
-        </div>
-    </div>
-
-    <div class="footer">
-        &copy; 2025 Mayekawa DAS - Tous droits réservés | <a href="#">Mentions légales</a>
-    </div>
-
-</body>
-</html>
+    <button class="add-client-btn">Ajouter un client</button>
+</div>
+{% endblock %}

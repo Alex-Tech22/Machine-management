@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Profil - Mayekawa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Informations personnelles</h2>
+    <p><strong>Nom :</strong> {{ user.last_name.upper() }}</p>
+    <p><strong>Prénom :</strong> {{ user.first_name.capitalize() }}</p>
+    <p><strong>Email :</strong> {{ user.email }}</p>
+    <p><strong>Téléphone :</strong> {{ user.mobile_number if user.mobile_number else "Non renseigné" }}</p>
+    <p><strong>Niveau d'accès :</strong> {{ user.access_level }}</p>
+
+    <div class="button-container">
+        <button class="btn modify">Modifier mes informations</button>
+        <button id="logout-btn" class="btn logout">Se déconnecter</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("logout-btn").addEventListener("click", function() {
+            window.location.href = "{{ url_for('main.logout') }}";
+        });
+    });
+</script>
+{% endblock %}

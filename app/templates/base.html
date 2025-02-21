@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mayekawa{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}    
+</head>
+<body>
+
+    <!-- HEADER COMMUN -->
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('main.client_page') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
+            </a>
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="user-menu">
+            <div class="user-bubble" onclick="toggleMenu()">
+                {{ current_user.first_name.capitalize() }}.{{ current_user.last_name.upper() }}
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu">
+                <a href="{{ url_for('main.profile') }}">Mon Profil</a>
+                <a href="{{ url_for('main.logout') }}">Déconnexion</a>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+
+    <!-- CONTENU SPÉCIFIQUE À CHAQUE PAGE -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER COMMUN -->
+    <footer>
+        <p>&copy; 2025 Mayekawa DAS - Tous droits réservés | <a href="#">Mentions légales</a></p>
+    </footer>
+
+    <script defer src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

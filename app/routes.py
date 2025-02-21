@@ -39,3 +39,8 @@ def logout():
     logout_user()
     flash("Déconnexion réussie!", "info")
     return redirect(url_for("main.login"))
+
+@main.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html", user=current_user)
