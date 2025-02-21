@@ -4,25 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="static/styles_login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_login.css') }}">
 </head>
 <body>
     <div class="header">
-        <img src="static\logo.png" alt="Mayekawa Logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
     </div>
-    
+
     <div class="login-box">
-        <h3>Identifiant</h3>
-        <input type="text" placeholder="Identifiant">
-        <a href="#">Identifiant oublié ?</a>
-        
-        <h3>Mot de passe</h3>
-        <input type="password" placeholder="Mot de passe">
-        <a href="#">Mot de passe oublié ?</a>
-        
-        <button>Connexion</button>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <h3>Identifiant</h3>
+            {{ form.email(class="input-field", placeholder="Votre email") }}
+            <a href="#">Identifiant oublié ?</a>
+
+            <h3>Mot de passe</h3>
+            {{ form.password(class="input-field", placeholder="Mot de passe") }}
+            <a href="#">Mot de passe oublié ?</a>
+
+            <div>
+                {{ form.remember }} Se souvenir de moi
+            </div>
+
+            {{ form.submit(class="login-button") }}
+        </form>
     </div>
-    
+
     <div class="footer">
         &copy; 2025 Mayekawa DAS - Tous droits réservés | <a href="#">Mentions légales</a>
     </div>

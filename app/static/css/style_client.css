@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #a80000, #ffffff);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: black;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-left: 10px;
+}
+
+.user-info {
+    background: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.user-info img {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    background: white;
+    padding: 20px;
+    width: 300px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+}
+
+.client-list {
+    list-style: none;
+    padding: 0;
+}
+
+.client-list button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-client {
+    width: 100%;
+    padding: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.footer {
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+}
+
+.footer a {
+    color: red;
+    text-decoration: none;
+}
