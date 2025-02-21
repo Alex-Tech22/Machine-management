@@ -12,15 +12,10 @@ def login():
 
     if form.validate_on_submit():
         print("✅ Formulaire soumis !")  # Debug
-        user = User.get_by_email(form.email.data)
+        user = User.query.filter_by(email=form.email.data).first()
 
-        if not user:
-            print("❌ Utilisateur introuvable !")  # Debug
-            flash("Identifiant ou mot de passe incorrect.", "danger")
-            return render_template("login.html", form=form)
-
-        if not user.check_password(form.password.data):
-            print("❌ Mot de passe incorrect !")  # Debug
+        if not user or not user.check_password(form.password.data):
+            print("❌ Identifiant ou mot de passe incorrect !")  # Debug
             flash("Identifiant ou mot de passe incorrect.", "danger")
             return render_template("login.html", form=form)
 
