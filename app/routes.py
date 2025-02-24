@@ -1,10 +1,17 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import LoginForm
+from app.forms import LoginForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.forms import UserForm
 from app.models import User,db
+from flask_mail import Mail, Message
+from app import db, mail, app
+from itsdangerous import URLSafeTimedSerializer
+from argon2 import PasswordHasher
+
+ph = PasswordHasher()  # Hashage du mot de passe
 
 main = Blueprint('main', __name__)
+auth = Blueprint('auth', __name__)
 
 @main.route("/", methods=["GET", "POST"])
 @main.route("/login", methods=["GET", "POST"])
@@ -64,10 +71,87 @@ def create_user():
             mobile_number=form.mobile_number.data,
             access_level=form.access_level.data
         )
-        new_user.set_password(form.password.data)  # Hash du mot de passe
+        new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
         flash("✅ Utilisateur créé avec succès !", "success")
         return redirect(url_for("main.client_page"))
 
     return render_template("create_user.html", form=form)
+
+# 🔹 Générer un token sécurisé pour la réinitialisation
+def generate_reset_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+# 🔹 Vérifier le token et récupérer l'email
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
+        return email
+    except:
+        return None
+
+# 🔹 Envoyer un email de réinitialisation
+def send_reset_email(email, token):
+    reset_link = url_for("auth.reset_password", token=token, _external=True)
+    subject = "🔐 Réinitialisation de votre mot de passe"
+    body = f"""
+Bonjour,
+
+Cliquez sur le lien suivant pour réinitialiser votre mot de passe :
+{reset_link}
+
+Si vous n'avez pas demandé de réinitialisation, ignorez cet email.
+
+Cordialement,
+L'équipe Mayekawa
+"""
+
+    with app.app_context():
+        msg = Message(subject, 
+                      sender=app.config['MAIL_USERNAME'],
+                      recipients=[email])
+        msg.body = body
+
+        try:
+            mail.send(msg)
+            print(f"📨 Email de réinitialisation envoyé à {email}")
+        except Exception as e:
+            print(f"❌ Erreur d'envoi : {str(e)}")
+
+# Route pour demander la réinitialisation
+@auth.route("/reset_password", methods=["GET", "POST"])
+def reset_request():
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            token = generate_reset_token(user.email)
+            send_reset_email(user.email, token)
+        flash("📩 Un email de réinitialisation vous a été envoyé.", "info")
+        return redirect(url_for("auth.login"))
+    return render_template("reset_request.html", form=form)
+
+# Route pour réinitialiser le mot de passe (avec token)
+@auth.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    email = verify_reset_token(token)
+    if not email:
+        flash("❌ Lien de réinitialisation invalide ou expiré.", "danger")
+        return redirect(url_for("auth.reset_request"))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash("❌ Utilisateur introuvable.", "danger")
+        return redirect(url_for("auth.reset_request"))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.password = ph.hash(form.password.data)
+        db.session.commit()
+        flash("✅ Votre mot de passe a été réinitialisé !", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("reset_password.html", form=form)

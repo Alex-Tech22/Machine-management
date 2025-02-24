@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 class LoginForm(FlaskForm):
     email = StringField(
@@ -24,3 +24,14 @@ class UserForm(FlaskForm):
     password = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=6)])
     access_level = IntegerField("Niveau d'accès (1, 2 ou 3)", validators=[DataRequired()])
     submit = SubmitField("Créer l'utilisateur")
+
+# Formulaire pour demander un reset de mot de passe
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Envoyer l'email de réinitialisation")
+
+# Formulaire pour entrer le nouveau mot de passe
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Nouveau mot de passe", validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField("Confirmer le mot de passe", validators=[DataRequired(), EqualTo("password")])
+    submit = SubmitField("Réinitialiser le mot de passe")

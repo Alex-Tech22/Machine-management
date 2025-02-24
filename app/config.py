@@ -6,7 +6,9 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path, override=True)  # ✅ Force l'utilisation de .env même si des variables système existent
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'super-secret-key')
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    if not SECRET_KEY:
+        raise ValueError("❌ SECRET_KEY non définie !")
 
     # Connexion MySQL via .env
     DB_USER = os.getenv('DB_USER')
@@ -24,3 +26,10 @@ class Config:
     # Configuration des cookies de session
     SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_SECURE = True
+
+    # 🔹 Configuration SMTP pour l'envoi d'email (Modifie avec tes infos)
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")  # Ton email
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")  # Ton mot de passe
