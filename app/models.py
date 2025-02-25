@@ -28,7 +28,37 @@ class User(UserMixin, db.Model):
         except VerifyMismatchError:
             print("❌ Mot de passe incorrect !")
             return False
+        except Exception as e:
+            print(f"⚠ Erreur lors de la vérification du mot de passe : {e}")
+            return False
 
     @classmethod
     def get_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
+
+class Machines(db.Model):
+    __tablename__ = 'machines'
+    ID_machines = db.Column(db.Integer, primary_key=True)
+    machine_name = db.Column(db.String(100), nullable=False)
+    serial_number = db.Column(db.String(10), unique=True, nullable=False)
+    modele = db.Column(db.String(50))
+    production_date = db.Column(db.DateTime)
+    qrcode = db.Column(db.String(255))
+    ID_production_ligne = db.Column(db.Integer, db.ForeignKey('production_ligne.ID_production_ligne'))
+    ID_manual_link = db.Column(db.Integer, db.ForeignKey('manual.ID_manual_link'))
+    ID_customer = db.Column(db.Integer, db.ForeignKey('customers_list.ID_customer'))
+
+class CustomersList(db.Model):
+    __tablename__ = 'customers_list'
+    ID_customer = db.Column(db.Integer, primary_key=True)
+    customers_name = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(255))
+    logo = db.Column(db.String(255))
+
+class History(db.Model):
+    __tablename__ = 'history'
+    ID_history = db.Column(db.Integer, primary_key=True)
+    révisions_date = db.Column(db.DateTime)
+    tech_name = db.Column(db.String(50))
+    Remarks = db.Column(db.Text)
+    ID_machines = db.Column(db.Integer, db.ForeignKey('machines.ID_machines'))

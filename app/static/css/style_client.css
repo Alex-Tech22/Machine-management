@@ -1,54 +1,108 @@
-/* ✅ Style général de la page client */
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    text-align: center;
+/* Style général */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background:  rgb(209, 0, 59);
+    color: white;
 }
 
-/* ✅ Titre */
-.title {
-    font-size: 24px;
-    font-weight: bold;
+.sidebar h1 {
     color: black;
+    font-size: 18px;
+    margin-bottom: 10px;
 }
 
-/* ✅ Liste des clients */
-.client-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-/* ✅ Boutons clients */
 .client-btn {
     width: 100%;
     padding: 10px;
-    font-size: 18px;
+    margin: 5px 0;
+    border: none;
     background-color: white;
-    border: 2px solid black;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
+    color: black;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .client-btn:hover {
-    background-color: #ddd;
+    background-color: lightgray;
 }
 
-/* ✅ Bouton "Ajouter un client" */
+/* Bouton Ajouter un client */
 .add-client-btn {
-    margin-top: 20px;
-    padding: 10px 15px;
-    font-size: 18px;
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: 2px solid rgb(0, 0, 0);
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
+    width: 100%;
+    padding: 10px;
+    background-color: #d70000;
+    color: white;
+    border: none;
     border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 .add-client-btn:hover {
-    background-color: rgb(192, 0, 26);
+    background-color: #a30000;
+}
+
+/* Contenu principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+/* Conteneur principal */
+.container {
+    display: flex;
+    height: calc(100vh - 100px);
+}
+
+/* Sidebar (Liste des clients) */
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+/* Section détails du client */
+.client-details {
+    flex: 1;
+    background-color: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+}
+
+/* Carte machine */
+.machine-card {
+    display: inline-block;
+    width: 150px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+}
+
+.machine-card img {
+    width: 100%;
+    height: auto;
+}
+
+.add-machine-card {
+    display: inline-block;
+    width: 150px;
+    height: 100px;
+    text-align: center;
+    font-size: 30px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #ddd;
+    cursor: pointer;
 }
