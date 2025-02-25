@@ -9,7 +9,11 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     if not SECRET_KEY:
         raise ValueError("❌ SECRET_KEY non définie !")
-
+    
+    SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
+    if not SECURITY_PASSWORD_SALT:
+        raise ValueError("❌ SECURITY_PASSWORD_SALT non défini dans .env !")
+    
     # Connexion MySQL via .env
     DB_USER = os.getenv('DB_USER')
     DB_PASSWORD = os.getenv('DB_PASSWORD')

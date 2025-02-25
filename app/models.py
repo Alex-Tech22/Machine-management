@@ -2,8 +2,7 @@ from flask_login import UserMixin
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app import db
 
 ph = PasswordHasher()
 
