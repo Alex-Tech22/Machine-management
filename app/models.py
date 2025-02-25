@@ -1,9 +1,11 @@
 from flask_login import UserMixin
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 
-ph = PasswordHasher()  # ✅ Création d'une instance Argon2
+db = SQLAlchemy()
+
+ph = PasswordHasher()
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user_profile'

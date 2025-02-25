@@ -1,25 +1,24 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, current_user
 from app.forms import LoginForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, db
 from app.utils.email_utils import send_reset_email
 from itsdangerous import URLSafeTimedSerializer
-from app import app
 from argon2 import PasswordHasher
 
 ph = PasswordHasher()
 auth_bp = Blueprint('auth', __name__)
 
-# 🔹 Générer un token sécurisé pour la réinitialisation
+# Générer un token sécurisé pour la réinitialisation
 def generate_reset_token(email):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=current_app.config['SECURITY_PASSWORD_SALT'])
 
-# 🔹 Vérifier le token et récupérer l'email
+# Vérifier le token et récupérer l'email
 def verify_reset_token(token, expiration=3600):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
+        email = serializer.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
         return email
     except:
         return None

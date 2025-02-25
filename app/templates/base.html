@@ -12,22 +12,29 @@
     <!-- HEADER COMMUN -->
     <header>
         <div class="logo">
-            <a href="{{ url_for('main.client_page') }}">
+            <a href="{{ url_for('client.client_page') }}"> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
             </a>
         </div>
+        
         {% if current_user.is_authenticated %}
         <div class="user-menu">
             <div class="user-bubble" onclick="toggleMenu()">
                 {{ current_user.first_name.capitalize() }}.{{ current_user.last_name.upper() }}
             </div>
             <div class="dropdown-menu" id="dropdown-menu">
-                <a href="{{ url_for('main.profile') }}">Mon Profil</a>
+                <a href="{{ url_for('user.profile') }}">Mon Profil</a> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
+                
                 {% if current_user.access_level >= 2 %}
-                <a href="{{ url_for('main.create_user') }}">Créer un compte</a>
+                <a href="{{ url_for('user.create_user') }}">Créer un compte</a> <!-- ✅ Corrigé -->
                 {% endif %}
-                <a href="{{ url_for('main.logout') }}">Déconnexion</a>
+                
+                <a href="{{ url_for('auth.logout') }}">Déconnexion</a> <!-- ✅ Corrigé -->
             </div>
+        </div>
+        {% else %}
+        <div class="login-link">
+            <a href="{{ url_for('auth.login') }}">Connexion</a> <!-- ✅ Ajout d'un lien de connexion si pas connecté -->
         </div>
         {% endif %}
     </header>
