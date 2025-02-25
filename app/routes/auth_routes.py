@@ -27,13 +27,17 @@ def verify_reset_token(token, expiration=3600):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        with current_app.app_context():
+            user = User.query.filter_by(email=form.email.data).first()
+
         if not user or not user.check_password(form.password.data):
             flash("Identifiant ou mot de passe incorrect.", "danger")
             return render_template("auth/login.html", form=form)
+        
         login_user(user, remember=form.remember.data)
         flash(f"Bienvenue {user.first_name}!", "success")
         return redirect(url_for("client.client_page"))
+    
     return render_template("auth/login.html", form=form)
 
 @auth_bp.route("/logout")
@@ -46,12 +50,16 @@ def logout():
 def reset_request():
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        with current_app.app_context():
+            user = User.query.filter_by(email=form.email.data).first()
+
         if user:
             token = generate_reset_token(user.email)
             send_reset_email(user.email, token)
+
         flash("📩 Un email de réinitialisation vous a été envoyé.", "info")
         return redirect(url_for("auth.login"))
+
     return render_template("auth/reset_request.html", form=form)
 
 @auth_bp.route("/reset_password/<token>", methods=["GET", "POST"])
@@ -61,15 +69,19 @@ def reset_password(token):
         flash("❌ Lien invalide ou expiré.", "danger")
         return redirect(url_for("auth.reset_request"))
 
-    user = User.query.filter_by(email=email).first()
+    with current_app.app_context():  # ✅ Ajout du contexte
+        user = User.query.filter_by(email=email).first()
+
     if not user:
         flash("❌ Utilisateur introuvable.", "danger")
         return redirect(url_for("auth.reset_request"))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user.password = ph.hash(form.password.data)
-        db.session.commit()
+        with current_app.app_context():  # ✅ Ajout du contexte
+            user.password = ph.hash(form.password.data)
+            db.session.commit()
+        
         flash("✅ Mot de passe réinitialisé!", "success")
         return redirect(url_for("auth.login"))
 

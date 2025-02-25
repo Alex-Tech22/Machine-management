@@ -4,6 +4,7 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from app.config import Config
 
+# ✅ Initialisation des extensions
 db = SQLAlchemy()
 mail = Mail()
 login_manager = LoginManager()
