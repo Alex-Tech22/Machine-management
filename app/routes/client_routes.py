@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
-from app.models import CustomersList, db
-from app.forms import AddClientForm
+from app.models import CustomersList, Machines, db
+from app.forms import AddClientForm, AddMachineForm
 from app.config import UPLOAD_FOLDER
 
 client_bp = Blueprint('client', __name__)
@@ -83,3 +83,24 @@ def delete_client(client_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False, "error": "Client non trouvé"}), 404
+    
+@client_bp.route("/client/<int:client_id>/add_machine", methods=["GET", "POST"])
+def add_machine(client_id):
+    client = CustomersList.query.get_or_404(client_id)
+    form = AddMachineForm()
+
+    if form.validate_on_submit():
+        new_machine = Machines(
+            machine_name=form.machine_name.data,
+            serial_number=form.serial_number.data,
+            modele=form.modele.data,
+            production_date=form.production_date.data,
+            customer=client
+        )
+
+        db.session.add(new_machine)
+        db.session.commit()
+        flash("Machine ajoutée avec succès !", "success")
+        return redirect(url_for("client.view_client", client_id=client_id))
+
+    return render_template("add_machine.html", form=form, client=client)

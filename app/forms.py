@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from flask_wtf.file import FileAllowed, FileRequired
 
@@ -17,6 +17,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField("Se souvenir de moi")
     submit = SubmitField("Se connecter", render_kw={"class": "login-button"})
 
+# Formulaire pour créer un nouvel utilisateur
 class UserForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     first_name = StringField("Prénom", validators=[DataRequired(), Length(min=2, max=30)])
@@ -37,6 +38,7 @@ class ResetPasswordForm(FlaskForm):
     confirm_password = PasswordField("Confirmer le mot de passe", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Réinitialiser le mot de passe")
 
+# Formulaire pour ajouter un client
 class AddClientForm(FlaskForm):
     customers_name = StringField("Nom du client", validators=[DataRequired(), Length(min=2, max=100)])
     address = StringField("Adresse", validators=[DataRequired(), Length(min=5, max=255)])
@@ -46,3 +48,12 @@ class AddClientForm(FlaskForm):
     ])
 
     submit = SubmitField("Ajouter le client")
+
+# Formulaire pour ajouter une machine
+class AddMachineForm(FlaskForm):
+    machine_name = StringField("Nom de la machine", validators=[DataRequired()])
+    serial_number = StringField("Numéro de série", validators=[DataRequired()])
+    modele = StringField("Modèle", validators=[DataRequired()])
+    production_date = DateField("Date de production", format='%Y-%m-%d', validators=[DataRequired()])
+    
+    submit = SubmitField("Ajouter la machine")

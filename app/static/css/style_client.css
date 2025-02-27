@@ -197,3 +197,22 @@ body {
 .delete-btn:hover {
     background-color: darkred;
 }
+
+.add-machine-card {
+    display: inline-block;
+    width: 150px;
+    height: 100px;
+    text-align: center;
+    font-size: 30px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #ddd;
+    cursor: pointer;
+    line-height: 100px;
+    font-weight: bold;
+}
+
+.add-machine-card:hover {
+    background-color: lightgray;
+}

@@ -27,6 +27,7 @@
     <div class="client-details" id="client-details">
         <h2>Sélectionnez un client</h2>
         <p>Les détails du client apparaîtront ici.</p>
+        <a href="{{ url_for('client.add_machine', client_id=client.ID_customer) }}" class="add-machine-card">+</a>
     </div>
 </div>
 {% endblock %}
