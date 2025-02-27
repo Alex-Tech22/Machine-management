@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
+from flask_wtf.file import FileAllowed, FileRequired
 
 class LoginForm(FlaskForm):
     email = StringField(
@@ -35,3 +36,13 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField("Nouveau mot de passe", validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField("Confirmer le mot de passe", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Réinitialiser le mot de passe")
+
+class AddClientForm(FlaskForm):
+    customers_name = StringField("Nom du client", validators=[DataRequired(), Length(min=2, max=100)])
+    address = StringField("Adresse", validators=[DataRequired(), Length(min=5, max=255)])
+
+    logo = FileField("Logo du client", validators=[
+        FileAllowed(["jpg", "png", "jpeg"], "Seuls les fichiers JPG et PNG sont autorisés !")
+    ])
+
+    submit = SubmitField("Ajouter le client")

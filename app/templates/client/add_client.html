@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
+{% endblock %}
+
+{% block title %}Ajouter un Client - Mayekawa{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Créer un nouveau client</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.customers_name.label }}
+            {{ form.customers_name(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.address.label }}
+            {{ form.address(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.logo.label }}
+            {{ form.logo(class="form-control-file") }}
+        </div>
+
+        <button type="submit" class="btn-submit">{{ form.submit.label }}</button>
+    </form>
+</div>
+{% endblock %}

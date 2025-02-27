@@ -1,19 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Clients - Mayekawa{% endblock %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
 {% endblock %}
 
+{% block title %}Clients - Mayekawa{% endblock %}
+
 {% block content %}
 <div class="container">
-    <h1 class="title">Liste des clients</h1>
-    <div class="client-list">
-        <button class="client-btn">Client 1</button>
-        <button class="client-btn">Client 2</button>
-        <button class="client-btn">Client 3</button>
+    <!-- Sidebar avec la liste des clients -->
+    <div class="sidebar">
+        <h1>Liste des clients</h1>
+        {% for client in clients %}
+            <div class="client-item" id="client-{{ client.ID_customer }}">
+                <button class="client-btn" onclick="loadClient('{{ client.ID_customer }}')">
+                    <img src="{{ url_for('static', filename=client.logo) }}" alt="{{ client.customers_name }}" style="width: 50px; height: 50px;">
+                    {{ client.customers_name }}
+                </button>
+                <button class="delete-btn" onclick="confirmDelete('{{ client.ID_customer }}')">🗑️</button>
+            </div>
+        {% endfor %}
+        <a href="{{ url_for('client.add_client') }}" class="add-client-btn">Ajouter un client</a>
     </div>
-    <button class="add-client-btn">Ajouter un client</button>
+
+    <!-- Section pour afficher les informations du client -->
+    <div class="client-details" id="client-details">
+        <h2>Sélectionnez un client</h2>
+        <p>Les détails du client apparaîtront ici.</p>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/client.js') }}"></script>
 {% endblock %}

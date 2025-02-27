@@ -12,7 +12,7 @@
     <!-- HEADER COMMUN -->
     <header>
         <div class="logo">
-            <a href="{{ url_for('client.client_page') }}"> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
+            <a href="{{ url_for('client.clients') }}"> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
             </a>
         </div>
@@ -20,7 +20,7 @@
         {% if current_user.is_authenticated %}
         <div class="user-menu">
             <div class="user-bubble" onclick="toggleMenu()">
-                {{ current_user.first_name.capitalize() }}.{{ current_user.last_name.upper() }}
+                {{ current_user.first_name.capitalize() }} {{ current_user.last_name.upper() }}
             </div>
             <div class="dropdown-menu" id="dropdown-menu">
                 <a href="{{ url_for('user.profile') }}">Mon Profil</a> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->

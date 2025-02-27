@@ -1,54 +1,199 @@
-/* ✅ Style général de la page client */
+/* Style général */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background:  rgb(209, 0, 59);
+    color: white;
+}
+
+.sidebar h1 {
+    color: black;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.client-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.client-btn:hover {
+    background-color: lightgray;
+}
+
+/* Bouton Ajouter un client */
+.add-client-btn {
+    width: auto;
+    padding: 10px 20px;
+    text-align: center;
+    background-color: #d70000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-client-btn:hover {
+    background-color: #a30000;
+}
+
+/* Contenu principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+/* Conteneur principal */
 .container {
-    max-width: 800px;
+    display: flex;
+    height: calc(100vh - 100px);
+}
+
+/* Sidebar (Liste des clients) */
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Section détails du client */
+.client-details {
+    flex: 1;
+    background-color: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+}
+
+/* Carte machine */
+.machine-card {
+    display: inline-block;
+    width: 150px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+}
+
+.machine-card img {
+    width: 100%;
+    height: auto;
+}
+
+.add-machine-card {
+    display: inline-block;
+    width: 150px;
+    height: 100px;
+    text-align: center;
+    font-size: 30px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+/* Style du conteneur du formulaire */
+.form-container {
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     margin: 50px auto;
     text-align: center;
 }
 
-/* ✅ Titre */
-.title {
-    font-size: 24px;
-    font-weight: bold;
+/* Titre du formulaire */
+.form-container h1 {
     color: black;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-/* ✅ Liste des clients */
-.client-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
+/* Style des champs de formulaire */
+.form-group {
+    color : black;
+    text-align: left;
+    margin-bottom: 15px;
 }
 
-/* ✅ Boutons clients */
-.client-btn {
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    color:black;
     width: 100%;
     padding: 10px;
-    font-size: 18px;
-    background-color: white;
-    border: 2px solid black;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Style du champ de téléversement de fichier */
+.form-control-file {
+    color:black;
+    width: 100%;
+    padding: 8px;
     border-radius: 5px;
 }
 
-.client-btn:hover {
-    background-color: #ddd;
-}
-
-/* ✅ Bouton "Ajouter un client" */
-.add-client-btn {
-    margin-top: 20px;
-    padding: 10px 15px;
-    font-size: 18px;
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: 2px solid rgb(0, 0, 0);
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
+/* Bouton de soumission */
+.btn-submit {
+    background-color: #008000;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
 }
 
-.add-client-btn:hover {
-    background-color: rgb(192, 0, 26);
+.btn-submit:hover {
+    background-color: #006400;
+}
+
+.client-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
 }
