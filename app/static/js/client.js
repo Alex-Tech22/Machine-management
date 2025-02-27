@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-function loadClient(clientName) {
-    const clientDetails = document.getElementById('client-details');
-
-    // Simuler les données des clients
-    const clientsData = {
-        "Client 1": {
-            address: "Adresse du client 1",
-            machines: [
-                { name: "Machine 1", image: "machine1.png" },
-                { name: "Machine 2", image: "machine1.png" }
-            ]
-        },
-        "Client 2": {
-            address: "Adresse du client 2",
-            machines: [
-                { name: "Machine A", image: "machine1.png" }
-            ]
-        },
-        "Client 3": {
-            address: "Adresse du client 3",
-            machines: []
-        }
-    };
-=======
 function loadClient(clientId) {
     fetch(`/client/${clientId}`)
         .then(response => response.json())
@@ -38,7 +13,6 @@ function loadClient(clientId) {
             }
         })
         .catch(error => console.error("Erreur:", error));
->>>>>>> 15d197504dd6b7197bf27b1106aaaea7339df254
 
     // Vérifier si le client existe
     if (clientsData[clientName]) {
@@ -76,8 +50,6 @@ function loadClient(clientId) {
 function addMachine(clientName) {
     alert(`Ajout d'une nouvelle machine pour ${clientName}`);
 }
-<<<<<<< HEAD
-=======
 
 function confirmDelete(clientId) {
     if (confirm("⚠ Voulez-vous vraiment supprimer ce client et toutes ses données ?")) {
@@ -101,4 +73,3 @@ function deleteClient(clientId) {
     .catch(error => console.error("Erreur lors de la suppression :", error));
 }
 
->>>>>>> 15d197504dd6b7197bf27b1106aaaea7339df254

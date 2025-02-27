@@ -11,10 +11,16 @@
     <!-- Sidebar avec la liste des clients -->
     <div class="sidebar">
         <h1>Liste des clients</h1>
-        <button class="client-btn" onclick="loadClient('Client 1')">Client 1</button>
-        <button class="client-btn" onclick="loadClient('Client 2')">Client 2</button>
-        <button class="client-btn" onclick="loadClient('Client 3')">Client 3</button>
-        <button class="add-client-btn">Ajouter un client</button>
+        {% for client in clients %}
+            <div class="client-item" id="client-{{ client.ID_customer }}">
+                <button class="client-btn" onclick="loadClient('{{ client.ID_customer }}')">
+                    <img src="{{ url_for('static', filename=client.logo) }}" alt="{{ client.customers_name }}" style="width: 50px; height: 50px;">
+                    {{ client.customers_name }}
+                </button>
+                <button class="delete-btn" onclick="confirmDelete('{{ client.ID_customer }}')">🗑️</button>
+            </div>
+        {% endfor %}
+        <a href="{{ url_for('client.add_client') }}" class="add-client-btn">Ajouter un client</a>
     </div>
 
     <!-- Section pour afficher les informations du client -->
@@ -23,10 +29,6 @@
         <p>Les détails du client apparaîtront ici.</p>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/client.js') }}"></script>
 {% endblock %}
 
 {% block extra_js %}
