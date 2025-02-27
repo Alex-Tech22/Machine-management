@@ -9,6 +9,7 @@ ph = PasswordHasher()
 class User(UserMixin, db.Model):
     __tablename__ = 'user_profile'
 
+    # Colonnes
     id = db.Column("ID_user", db.Integer, primary_key=True)
     email = db.Column(db.String(75), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
@@ -27,6 +28,9 @@ class User(UserMixin, db.Model):
             return ph.verify(self.password, password)
         except VerifyMismatchError:
             print("❌ Mot de passe incorrect !")
+            return False
+        except Exception as e:
+            print(f"⚠ Erreur lors de la vérification du mot de passe : {e}")
             return False
         except Exception as e:
             print(f"⚠ Erreur lors de la vérification du mot de passe : {e}")

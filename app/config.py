@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path, override=True)  # ✅ Force l'utilisation de .env même si des variables système existent
 
+UPLOAD_FOLDER = "app/static/logo_client"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     if not SECRET_KEY:
@@ -14,6 +17,9 @@ class Config:
     if not SECURITY_PASSWORD_SALT:
         raise ValueError("❌ SECURITY_PASSWORD_SALT non défini dans .env !")
     
+    # lien vers les logo client
+    UPLOAD_FOLDER = UPLOAD_FOLDER
+
     # Connexion MySQL via .env
     DB_USER = os.getenv('DB_USER')
     DB_PASSWORD = os.getenv('DB_PASSWORD')

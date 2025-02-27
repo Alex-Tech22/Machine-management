@@ -36,7 +36,7 @@ def login():
         
         login_user(user, remember=form.remember.data)
         flash(f"Bienvenue {user.first_name}!", "success")
-        return redirect(url_for("client.client_page"))
+        return redirect(url_for("client.clients"))
     
     return render_template("auth/login.html", form=form)
 

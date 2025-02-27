@@ -8,7 +8,19 @@ body {
 }
 
 .sidebar h1 {
+/* Style général */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background:  rgb(209, 0, 59);
+    color: white;
+}
+
+.sidebar h1 {
     color: black;
+    font-size: 18px;
+    margin-bottom: 10px;
     font-size: 18px;
     margin-bottom: 10px;
 }
@@ -18,17 +30,24 @@ body {
     padding: 10px;
     margin: 5px 0;
     border: none;
+    margin: 5px 0;
+    border: none;
     background-color: white;
     color: black;
+    color: black;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
     cursor: pointer;
     font-size: 16px;
 }
 
 .client-btn:hover {
     background-color: lightgray;
+    background-color: lightgray;
 }
 
+/* Bouton Ajouter un client */
 /* Bouton Ajouter un client */
 .add-client-btn {
     width: 100%;
@@ -37,6 +56,9 @@ body {
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Clients - Mayekawa{% endblock %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
 {% endblock %}
+
+{% block title %}Clients - Mayekawa{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -23,6 +23,10 @@
         <p>Les détails du client apparaîtront ici.</p>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/client.js') }}"></script>
 {% endblock %}
 
 {% block extra_js %}
