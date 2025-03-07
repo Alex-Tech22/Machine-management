@@ -57,3 +57,7 @@ class AddMachineForm(FlaskForm):
     production_date = DateField("Date de production", format='%Y-%m-%d', validators=[DataRequired()])
     
     submit = SubmitField("Ajouter la machine")
+
+class AddProductionLigneForm(FlaskForm):
+    prod_ligne_name = StringField("Nom de la ligne de production", validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField("Ajouter la ligne")

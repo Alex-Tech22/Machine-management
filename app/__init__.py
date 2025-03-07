@@ -3,8 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
 from app.config import Config
+from argon2 import PasswordHasher
 
 # ✅ Initialisation des extensions
+ph = PasswordHasher()
 db = SQLAlchemy()
 mail = Mail()
 login_manager = LoginManager()

@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
-{% endblock %}
-
 {% block title %}Ajouter un Client - Mayekawa{% endblock %}
 
 {% block content %}
@@ -31,4 +27,8 @@
         <button type="submit" class="btn-submit">{{ form.submit.label }}</button>
     </form>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_add_client.css') }}">
 {% endblock %}
