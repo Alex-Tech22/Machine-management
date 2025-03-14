@@ -5,8 +5,12 @@ function toggleMenu() {
 
 // Fermer le menu si on clique ailleurs
 document.addEventListener("click", function(event) {
-    let userMenu = document.querySelector(".user-menu");
-    if (!userMenu.contains(event.target)) {
-        document.getElementById("dropdown-menu").style.display = "none";
+    let userMenu = document.querySelector(".user-menu"); // ✅ Correction ici
+
+    if (userMenu && !userMenu.contains(event.target)) {
+        let menu = document.getElementById("dropdown-menu");
+        if (menu) {
+            menu.style.display = "none";
+        }
     }
 });

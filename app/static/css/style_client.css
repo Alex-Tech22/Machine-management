@@ -92,31 +92,34 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    padding-left: 20px;
+    padding: 10px;
+    margin-top: 10px;
     margin-bottom: 10px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid black;
+    border-left: 3px solid #d9534f;
     min-height: 150px;
     justify-content: flex-start;
 }
 
 /* Style des cartes machines */
 .machine-card {
-    display: flex;
+    display: block;
     flex-direction: column;
     align-items: center;
-    width: 120px;
+    width: fit-content;
     padding: 10px;
+    margin: 5px 0;
     text-align: center;
     border: 1px solid black;
-    border-radius: 10px;
-    background-color: #f8f8f8;
-    cursor: pointer;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    cursor: pointer;    
 }
 
 .machine-card img {
-    width: 100%;
+    width: auto;
     height: auto;
     background: white;
     border: 1px solid #ccc;

@@ -19,18 +19,18 @@
         </div>
         
         {% if current_user.is_authenticated %}
-        <div class="user-menu">
+        <div class="user-menu" id="user-menu">
             <div class="user-bubble" onclick="toggleMenu()">
                 {{ current_user.first_name.capitalize() }} {{ current_user.last_name.upper() }}
             </div>
             <div class="dropdown-menu" id="dropdown-menu">
-                <a href="{{ url_for('user.profile') }}">Mon Profil</a> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
+                <a href="{{ url_for('user.profile') }}">Mon Profil</a>
                 
                 {% if current_user.access_level >= 2 %}
-                <a href="{{ url_for('user.create_user') }}">Créer un compte</a> <!-- ✅ Corrigé -->
+                <a href="{{ url_for('user.create_user') }}">Créer un compte</a>
                 {% endif %}
                 
-                <a href="{{ url_for('auth.logout') }}">Déconnexion</a> <!-- ✅ Corrigé -->
+                <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
             </div>
         </div>
         {% else %}

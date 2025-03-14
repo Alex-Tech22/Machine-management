@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_machine.css') }}">
+{% endblock %}
+
+{% block title %}Machine - Mayekawa{% endblock %}
+
+{% block content %}
+<button class="Station1-btn" onclick="">🗑</button>
+{% endblock %}
+
+{% block extra_js %}
+<script src="machine.js"></script>
+{% endblock %}
