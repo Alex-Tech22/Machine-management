@@ -9,7 +9,6 @@ from app.config import UPLOAD_FOLDER
 from PIL import Image
 from io import BytesIO
 import qrcode
-
 client_bp = Blueprint('client', __name__)
 
 #======================================ROUTE CLIENT======================================#
@@ -93,10 +92,7 @@ def delete_client(client_id):
     else:
         return jsonify({"success": False, "error": "Client non trouvé"}), 404
     
-import qrcode
-from io import BytesIO
-from flask import current_app
-from PIL import Image
+
 
 #======================================ROUTE MACHINE======================================#
 
@@ -200,7 +196,12 @@ def add_production_ligne(client_id):
         db.session.commit()
         flash("✅ Ligne de production ajoutée avec succès !", "success")
         return redirect(url_for("client.clients"))
-    return render_template("client/client.html", clients=CustomersList.query.all(), form=form)
+    selected_client = CustomersList.query.get(client_id) if client_id else None
+    return render_template("client/client.html", 
+                        clients=CustomersList.query.all(), 
+                        selected_client=selected_client, 
+                        form=form)
+
 
 @client_bp.route("/delete_production_ligne/<int:ligne_id>", methods=["POST"])
 @login_required
