@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
 {% endblock %}
 
@@ -30,20 +31,16 @@
         <h2 id="client-name"></h2>
         <p id="client-address"></p>
 
-        <!-- Liste des lignes de production -->
+        <!-- Conteneur des lignes de production -->
         <div class="production-ligne-container" id="production-ligne-container">
             {% for ligne in production_lignes %}
-                <div class="production-ligne-card">
-                    <p onclick="toggleMachines('{{ ligne.ID_production_ligne }}')">
-                        {{ ligne.prod_ligne_name }} <span class="toggle-icon">▼</span>
-                    </p>
+                <div class="production-ligne-card" onclick="toggleMachines('{{ ligne.ID_production_ligne }}')">
+                    <p>{{ ligne.prod_ligne_name }} <span class="toggle-icon">▼</span></p>
                     <button class="delete-btn" onclick="deleteProductionLigne('{{ ligne.ID_production_ligne }}')">🗑</button>
                 </div>
-
-                <div id="machines-{{ ligne.ID_production_ligne }}" class="machines-container" style="display: none;"></div>
             {% endfor %}
         </div>
-        
+
         <!-- Bouton Ajouter une ligne de production -->
         <button id="add-production-ligne-btn" class="add-production-ligne-card" onclick="toggleProductionLigneForm()">Ajouter une ligne de production</button>
 
@@ -96,4 +93,5 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/client.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {% endblock %}

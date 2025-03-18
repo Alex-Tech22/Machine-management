@@ -14,6 +14,7 @@ client_bp = Blueprint('client', __name__)
 
 #======================================ROUTE CLIENT======================================#
 @client_bp.route("/clients")
+@login_required
 def clients():
     """Affiche la liste des clients avec leurs lignes de production."""
     clients = CustomersList.query.all()
@@ -29,6 +30,7 @@ def clients():
     machine_form=machine_form)
 
 @client_bp.route("/<int:client_id>")
+@login_required
 def get_client(client_id):
     """Récupère les informations d'un client spécifique."""
     client = CustomersList.query.get(client_id)
@@ -42,6 +44,7 @@ def get_client(client_id):
     return jsonify({"error": "Client non trouvé"}), 404
 
 @client_bp.route("/add", methods=["GET", "POST"])
+@login_required
 def add_client():
     form = AddClientForm()
 
@@ -71,6 +74,7 @@ def add_client():
     return render_template("client/add_client.html", form=form)
 
 @client_bp.route("/delete/<int:client_id>", methods=["DELETE"])
+@login_required
 def delete_client(client_id):
     """Supprime un client ainsi que toutes ses données associées."""
     client = CustomersList.query.get(client_id)
@@ -97,6 +101,7 @@ from PIL import Image
 #======================================ROUTE MACHINE======================================#
 
 @client_bp.route("/<int:client_id>/add_machine", methods=["POST"])
+@login_required
 def add_machine(client_id):
     client = CustomersList.query.get_or_404(client_id)
     form = AddMachineForm()
@@ -143,6 +148,7 @@ def add_machine(client_id):
     return redirect(url_for("client.clients"))
 
 @client_bp.route("/<int:client_id>/production_ligne/<int:ligne_id>")
+@login_required
 def get_machines(client_id, ligne_id):
     """Récupère les machines affectées à une ligne de production."""
     machines = Machines.query.filter_by(ID_production_ligne=ligne_id).all()
@@ -153,6 +159,7 @@ def get_machines(client_id, ligne_id):
     return jsonify([{"id": machine.ID_machines, "name": machine.machine_name} for machine in machines])
 
 @client_bp.route("/delete_machine/<int:machine_id>", methods=["POST"])
+@login_required
 def delete_machine(machine_id):
     machine = Machines.query.get(machine_id)
     if machine:
@@ -164,6 +171,7 @@ def delete_machine(machine_id):
 #======================================ROUTE LIGNE PROD======================================#
 
 @client_bp.route("/<int:client_id>/production_lignes", methods=["GET"])
+@login_required
 def get_production_lignes(client_id):
     """Récupère les lignes de production d'un client."""
     print(f"DEBUG: Requête pour client_id={client_id}")
@@ -179,6 +187,7 @@ def get_production_lignes(client_id):
     return jsonify(lignes_data)
 
 @client_bp.route("/<int:client_id>/add_production_ligne", methods=["POST"])
+@login_required
 def add_production_ligne(client_id):
     """Ajoute une ligne de production à un client."""
     form = AddProductionLigneForm()
@@ -194,6 +203,7 @@ def add_production_ligne(client_id):
     return render_template("client/client.html", clients=CustomersList.query.all(), form=form)
 
 @client_bp.route("/delete_production_ligne/<int:ligne_id>", methods=["POST"])
+@login_required
 def delete_production_ligne(ligne_id):
     ligne = ProductionLigne.query.get(ligne_id)
     if ligne:

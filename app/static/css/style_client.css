@@ -1,10 +1,34 @@
-/* Style général */
+/*-------------------- Effet de chargement --------------------*/
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+/*-------------------- Style général --------------------*/
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background:  rgb(209, 0, 59);
+    background: rgb(209, 0, 59);
     color: white;
+}
+
+/*-------------------- Sidebar --------------------*/
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .sidebar h1 {
@@ -13,6 +37,7 @@ body {
     margin-bottom: 10px;
 }
 
+/*-------------------- Titres --------------------*/
 h2 {
     color: #000000;
     font-size: 22px;
@@ -20,6 +45,14 @@ h2 {
     margin-bottom: 20px;
 }
 
+p {
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/*-------------------- Boutons Clients --------------------*/
 .client-btn {
     width: 100%;
     padding: 10px;
@@ -36,7 +69,26 @@ h2 {
     background-color: lightgray;
 }
 
-/* Bouton Ajouter un client */
+.client-address {
+    font-size: 14px;
+    color: black;
+}
+
+.client-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+/*-------------------- Bouton Ajouter un client --------------------*/
 .add-client-btn {
     width: auto;
     padding: 10px 20px;
@@ -54,100 +106,104 @@ h2 {
     background-color: #a30000;
 }
 
-/* Contenu principal */
-.main-content {
-    flex: 1;
-    padding: 20px;
-}
-/* Conteneur principal */
+/*-------------------- Conteneur principal --------------------*/
 .container {
     display: flex;
     height: calc(100vh - 100px);
 }
 
-/* Sidebar (Liste des clients) */
-.sidebar {
-    background-color: white;
-    padding: 20px;
-    width: 250px;
-    border-radius: 10px;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/*-------------------- Machines --------------------*/
+.machines-container {
+    display: flex!important; /* Aligne les machines en ligne */
+    flex-wrap: wrap; /* Permet le retour à la ligne si nécessaire */
+    gap: 10px; /* Espacement entre les machines */
+    justify-content: flex-start; /* Aligne les machines à gauche */
+    align-items: flex-start; /* Évite l’étirement */
+    width: 100%;
 }
 
-/* Section détails du client */
-.client-details {
-    flex: 1;
-    background-color: white;
-    margin: 20px;
-    padding: 20px;
-    border-radius: 10px;
-    color: black;
-}
-
-/* Conteneur des machines */
-.machine-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid black;
-    border-left: 3px solid #d9534f;
-    min-height: 150px;
-    justify-content: flex-start;
-}
-
-/* Style des cartes machines */
 .machine-card {
-    display: block;
-    flex-direction: column;
-    align-items: center;
-    width: fit-content;
+    width: 150px; /* Définit une largeur fixe */
+    flex-shrink: 0; /* Empêche les machines de rétrécir */
+    background: #f9f9f9;
     padding: 10px;
-    margin: 5px 0;
+    border: 1px solid #ddd;
     text-align: center;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    cursor: pointer;    
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
+
 
 .machine-card img {
     width: auto;
     height: auto;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    width: 120px;
+    max-height: 120px;
 }
 
-/* Bouton Ajouter une machine */
+/*-------------------- Bouton Ajouter une machine --------------------*/
 .add-machine-card {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background-color: green;
-    color: white;
+    width: 50px;
+    height: 50px;
     font-size: 24px;
-    text-align: center;
-    line-height: 40px;
-    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    border-radius: 50%;
 }
 
 .add-machine-card:hover {
-    background-color: darkgreen;
+    background-color: #45a049;
 }
 
-/* Style du conteneur du formulaire */
+/*-------------------- Lignes de production --------------------*/
+.production-ligne-container {
+    width: 100%;
+    display: flex;
+    background: #ffffff;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.production-ligne-card {
+    position: relative;
+    background: rgb(204, 204, 204);
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 5px auto;
+    border-radius: 5px;
+}
+
+.production-ligne-card .delete-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/*-------------------- Icônes --------------------*/
+.toggle-icon {
+    font-size: 14px;
+}
+
+/*-------------------- Formulaires --------------------*/
 .form-container {
     display: none;
     margin-top: 10px;
@@ -157,17 +213,8 @@ h2 {
     border: 1px solid #ccc;
 }
 
-/* Titre du formulaire */
-.form-container h1 {
-    color: black;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Style des champs de formulaire */
 .form-group {
-    color : black;
+    color: black;
     text-align: left;
     margin-bottom: 15px;
 }
@@ -180,7 +227,7 @@ h2 {
 }
 
 .form-control {
-    color:black;
+    color: black;
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -188,83 +235,21 @@ h2 {
     font-size: 14px;
 }
 
-/* Style du champ de téléversement de fichier */
-.form-control-file {
-    color:black;
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-/* Bouton de soumission */
-.btn-submit {
-    background-color: #008000;
-    color: white;
-    font-size: 16px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.btn-submit:hover {
-    background-color: #006400;
-}
-
-.client-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.delete-btn {
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-left: 5px;
-}
-
-.delete-btn:hover {
-    background-color: darkred;
-}
-
-.production-ligne-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ddd;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px 0;
-}
-
-.toggle-icon {
-    font-size: 14px;
-}
-
-/* Styles pour la modale */
+/*-------------------- Modale --------------------*/
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000; 
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Contenu de la modale */
 .modal-content {
     background-color: white;
     padding: 20px;
@@ -275,75 +260,7 @@ h2 {
     position: relative;
 }
 
-/* Bouton de fermeture */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* Formulaire à l'intérieur de la modale */
-.modal-content form {
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-content .form-group {
-    margin-bottom: 10px;
-}
-
-.modal-content .btn-submit {
-    background-color: #d9534f;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.modal-content .btn-submit:hover {
-    background-color: #c9302c;
-}
-
-/* Boutons dans la modale */
-.form-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
-.btn-submit {
-    background-color: #d9534f;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    flex: 1;
-    margin-right: 5px;
-}
-
-.btn-submit:hover {
-    background-color: #c9302c;
-}
-
-.btn-cancel {
-    background-color: #6c757d;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    flex: 1;
-    margin-left: 5px;
-}
-
-.btn-cancel:hover {
-    background-color: #5a6268;
-}
-
+/*-------------------- Gestion des images --------------------*/
 .img-client {
     max-width: 70%;
     height: auto;

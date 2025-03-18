@@ -10,17 +10,20 @@ function toggleMachines(ligneId) {
         return;
     }
 
-    // Afficher/Masquer les machines sous la ligne de production
+    document.querySelectorAll('.machines-container').forEach(container => {
+        if (container.id !== "machines-" + ligneId) {
+            container.style.display = "none";
+        }
+    });
+
     let isVisible = machinesDiv.style.display === "block";
     machinesDiv.style.display = isVisible ? "none" : "block";
     toggleIcon.innerHTML = isVisible ? "▼" : "▲";
 
-    // Charger les machines si elles ne sont pas encore chargées
     if (!isVisible) {
         loadMachines(ligneId);
     }
 }
-
 
 // Afficher/Masquer le formulaire d'ajout de ligne de production
 function toggleProductionLigneForm() {
@@ -31,7 +34,6 @@ function toggleProductionLigneForm() {
         return;
     }
     
-    // Affiche le formulaire ou le cache
     formDiv.style.display = (formDiv.style.display === "none" || formDiv.style.display === "") ? "block" : "none";
     
     console.log("✅ Formulaire de production ligne visible :", formDiv.style.display);
@@ -46,6 +48,8 @@ function loadClient(clientId) {
     selectedClientId = clientId;
     if (!clientId) return;
 
+    document.getElementById("client-details").style.display = "none"; // Masquer temporairement
+
     fetch(`/client/${clientId}`)
     .then(response => response.json())
     .then(data => {
@@ -53,7 +57,7 @@ function loadClient(clientId) {
             document.getElementById("client-name").textContent = data.customers_name;
             document.getElementById("client-address").textContent = "Adresse: " + data.address;
             document.getElementById("client-details").style.display = "block";
-            
+
             // Charger les lignes de production après récupération du client
             loadProductionLignes(clientId);
         } else {
@@ -62,6 +66,7 @@ function loadClient(clientId) {
     })
     .catch(error => console.error("Erreur lors du chargement du client :", error));
 }
+
 
 // Charger les lignes de production du client sélectionné
 function loadProductionLignes(clientId) {
@@ -94,29 +99,26 @@ function loadProductionLignes(clientId) {
 
 // Charger les machines d'une ligne de production
 function loadMachines(ligneId) {
+    let machineContainer = document.getElementById(`machines-${ligneId}`);
+    if (!machineContainer) {
+        console.error(`❌ Erreur : Impossible de trouver machines-${ligneId}`);
+        return;
+    }
+
+    machineContainer.innerHTML = `<div class="skeleton" style="height: 50px; width: 100%"></div>`;
+
     fetch(`/client/${selectedClientId}/production_ligne/${ligneId}`)
     .then(response => response.json())
     .then(data => {
-        let machineContainer = document.getElementById(`machines-${ligneId}`);
-        if (!machineContainer) {
-            console.error(`❌ Erreur : Impossible de trouver machines-${ligneId}`);
-            return;
-        }
+        machineContainer.innerHTML = "";  // Nettoyer l'affichage
 
-        machineContainer.innerHTML = "";
-
-        if (!Array.isArray(data)) {
-            console.error("❌ Erreur : La réponse API n'est pas un tableau", data);
-            machineContainer.innerHTML = `<p>Aucune machine enregistrée.</p>`;
-            return;
-        }
-
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
             machineContainer.innerHTML = `<p>Aucune machine enregistrée.</p>`;
         } else {
             data.forEach(machine => {
                 let machineDiv = document.createElement("div");
                 machineDiv.className = "machine-card";
+                machineDiv.id = `machine-${machine.id}`;
                 machineDiv.innerHTML = `
                     <img src="/static/images/toridas.png" alt="Machine">
                     <p>${machine.name}</p>
@@ -125,14 +127,13 @@ function loadMachines(ligneId) {
                 machineContainer.appendChild(machineDiv);
             });
         }
-
         let addButton = document.createElement("button");
         addButton.className = "add-machine-card";
         addButton.textContent = "+";
         addButton.onclick = () => openMachineModal(ligneId);
         machineContainer.appendChild(addButton);
     })
-    .catch(error => console.error("❌ Erreur lors du chargement des machines :", error));
+    .catch(error => console.error("Erreur lors du chargement des machines :", error));
 }
 
 //======================================SUPPRESSION DE DONNÉES======================================//
@@ -177,24 +178,47 @@ function deleteProductionLigne(ligneId) {
 
 // Supprimer une machine
 function deleteMachine(machineId) {
-    if (confirm("Voulez-vous vraiment supprimer cette machine ?")) {
-        fetch(`/client/delete_machine/${machineId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("✅ Machine supprimée avec succès !");
-                document.getElementById(`machine-${machineId}`).remove();
-            } else {
-                alert("❌ Erreur : " + data.error);
-            }
-        })
-        .catch(error => console.error("Erreur lors de la suppression de la machine :", error));
+    if (!confirm("⚠ Voulez-vous vraiment supprimer cette machine ? Cette action est irréversible.")) {
+        return;
     }
+
+    fetch(`/client/delete_machine/${machineId}`, { method: "POST" })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast("✅ Machine supprimée avec succès !");
+            
+            let machineElement = document.getElementById(`machine-${machineId}`);
+            if (machineElement) {
+                machineElement.remove();
+            } else {
+                console.error(`❌ Erreur : L'élément machine-${machineId} est introuvable.`);
+            }
+
+            // Rafraîchissement automatique de la liste des machines
+            if (data.ligne_id) {
+                setTimeout(() => {
+                    refreshMachines(data.ligne_id);
+
+                    // Vérifier si la liste des machines est vide après suppression
+                    let machineContainer = document.getElementById(`machines-${data.ligne_id}`);
+                    if (!machineContainer || machineContainer.children.length === 0) {
+                        console.warn("⚠ Aucune machine restante, rechargement de la page...");
+                        location.reload();
+                    }
+                }, 500);
+            } else {
+                console.error("❌ Erreur : Aucun ID de ligne retourné par l'API.");
+                location.reload();
+            }
+        } else {
+            showToast("❌ Erreur : " + data.error, "error");
+        }
+    })
+    .catch(error => {
+        console.error("❌ Erreur lors de la suppression :", error);
+        location.reload(); // Recharge la page en cas d'erreur critique
+    });
 }
 
 
@@ -209,4 +233,19 @@ function openMachineModal(ligneId) {
 // Fermer la modale
 function closeMachineModal() {
     document.getElementById("machineModal").style.display = "none";
+}
+
+//========================================GESTION DE MESSAGE========================================//
+
+function showToast(message, type="success") {
+    toastr.options = { "positionClass": "toast-bottom-right" };
+    toastr[type](message);
+}
+
+function refreshMachines(ligneId) {
+    let machineContainer = document.getElementById(`machines-${ligneId}`);
+    if (machineContainer) {
+        machineContainer.innerHTML = "<p>Chargement...</p>"; // Indiquer qu'un chargement est en cours
+        loadMachines(ligneId);
+    }
 }
