@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField, DateField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField, DateField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from flask_wtf.file import FileAllowed, FileRequired
+from app import db
+from app.models import ModeleMachine
 
 class LoginForm(FlaskForm):
     email = StringField(
@@ -53,10 +55,14 @@ class AddClientForm(FlaskForm):
 class AddMachineForm(FlaskForm):
     machine_name = StringField("Nom de la machine", validators=[DataRequired()])
     serial_number = StringField("Numéro de série", validators=[DataRequired()])
-    modele = StringField("Modèle", validators=[DataRequired()])
     production_date = DateField("Date de production", format='%Y-%m-%d', validators=[DataRequired()])
-    
+    model_id = SelectField("Modèle de la machine", validators=[DataRequired()], coerce=int)
+
     submit = SubmitField("Ajouter la machine")
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.model_id.choices = [(m.ID_model, m.model_name) for m in db.session.query(ModeleMachine).all()]
 
 class AddProductionLigneForm(FlaskForm):
     prod_ligne_name = StringField("Nom de la ligne de production", validators=[DataRequired(), Length(max=50)])

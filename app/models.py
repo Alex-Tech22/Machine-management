@@ -4,6 +4,13 @@ from argon2.exceptions import VerifyMismatchError
 from app import db
 from app import ph
 
+# Table d'association entre ModeleMachine et Station
+associated_models_stations = db.Table(
+    "associated_models_stations",
+    db.Column("ID_model", db.Integer, db.ForeignKey("modele_machine.ID_model"), primary_key=True),
+    db.Column("ID_station", db.Integer, db.ForeignKey("station.ID_station"), primary_key=True)
+)
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user_profile'
 
@@ -33,7 +40,7 @@ class User(UserMixin, db.Model):
             print("❌ Mot de passe incorrect !")
             return False
         except Exception as e:
-            print(f"⚠ Erreur lors de la vérification du mot de passe : {e}")
+            print(f"⚠ Erreur lors de la vérification du mot de passe : {e}")   
             return False
 
     @classmethod
@@ -57,22 +64,39 @@ class Machines(db.Model):
     ID_machines = db.Column(db.Integer, primary_key=True)
     machine_name = db.Column(db.String(100), nullable=False)
     serial_number = db.Column(db.String(10), unique=True, nullable=False)
-    modele = db.Column(db.String(50), nullable=False)
     production_date = db.Column(db.Date, nullable=False)
     qrcode = db.Column(db.String(255), unique=True, nullable=True)
 
     # Clés étrangères
     ID_production_ligne = db.Column(db.Integer, db.ForeignKey("production_ligne.ID_production_ligne"), nullable=True)
     ID_manual_link = db.Column(db.Integer, db.ForeignKey("manual.ID_manual_link"), nullable=True)
+    ID_model = db.Column(db.Integer, db.ForeignKey("modele_machine.ID_model"), nullable=False)
 
     # Relations
     history = db.relationship("History", back_populates="machine", cascade="all, delete-orphan")
     production_ligne = db.relationship("ProductionLigne", back_populates="machines")
     manual = db.relationship("Manual", back_populates="machines")
-    stations = db.relationship("Station", back_populates="machine")
+    modele_machine = db.relationship("ModeleMachine", back_populates="machines")
 
     def __repr__(self):
         return f"<Machines {self.ID_machines}: {self.machine_name}>"
+
+class ProductionLigne(db.Model):
+    __tablename__ = "production_ligne"
+
+    # Colonnes
+    ID_production_ligne = db.Column(db.Integer, primary_key=True)
+    prod_ligne_name = db.Column(db.String(50), nullable=False)
+
+    # Clé étrangère (corrigée)
+    ID_customer = db.Column(db.Integer, db.ForeignKey("customers_list.ID_customer", ondelete="CASCADE"), nullable=False)
+
+    # Relations
+    customer = db.relationship("CustomersList", back_populates="production_lignes")
+    machines = db.relationship("Machines", back_populates="production_ligne", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<ProductionLigne {self.ID_production_ligne}: {self.prod_ligne_name}>"
 
 class CustomersList(db.Model):
     __tablename__ = 'customers_list'
@@ -105,6 +129,34 @@ class History(db.Model):
     # Relations
     machine = db.relationship("Machines", back_populates="history")
 
+class ModeleMachine(db.Model):
+    __tablename__ = "modele_machine"
+
+    # Colonnes
+    ID_model = db.Column(db.Integer, primary_key=True)
+    model_name = db.Column(db.String(50), nullable=False)
+
+    # Relations
+    machines = db.relationship("Machines", back_populates="modele_machine")
+    stations = db.relationship("Station", secondary=associated_models_stations, back_populates="modele_machines")
+
+    def __repr__(self):
+        return f"<ModeleMachine {self.ID_model}: {self.model_name}>"
+
+class Station(db.Model):
+    __tablename__ = "station"
+
+    # Colonnes
+    ID_station = db.Column(db.Integer, primary_key=True)
+    station_name = db.Column(db.String(100), nullable=False)
+
+    # Clés étrangères
+    ID_model = db.Column(db.Integer, db.ForeignKey("modele_machine.ID_model"), nullable=False)
+
+    # Relations
+    modele_machines = db.relationship("ModeleMachine", secondary=associated_models_stations, back_populates="stations")
+    settings = db.relationship("Settings", back_populates="station", cascade="all, delete-orphan")
+    
 class Settings(db.Model):
     __tablename__ = "settings"
 
@@ -112,6 +164,7 @@ class Settings(db.Model):
     ID_settings = db.Column(db.Integer, primary_key=True)
     setting_name = db.Column(db.String(50), nullable=False)
     setting_type = db.Column(db.String(20), nullable=False)
+    picture_link = db.Column(db.String(255), nullable=False)
 
     # Clés étrangères
     ID_station = db.Column(db.Integer, db.ForeignKey("station.ID_station", ondelete="CASCADE"), nullable=False)
@@ -135,32 +188,7 @@ class SettingValue(db.Model):
     # Relations
     setting = db.relationship("Settings", back_populates="values")
 
-class Station(db.Model):
-    __tablename__ = "station"
 
-    ID_station = db.Column(db.Integer, primary_key=True)
-    station_name = db.Column(db.String(100), nullable=False)
-    ID_machine = db.Column(db.Integer, db.ForeignKey("machines.ID_machines", ondelete="CASCADE"), nullable=False)
-
-    machine = db.relationship("Machines", back_populates="stations")
-    settings = db.relationship("Settings", back_populates="station", cascade="all, delete-orphan")
-
-class ProductionLigne(db.Model):
-    __tablename__ = "production_ligne"
-
-    # Colonnes
-    ID_production_ligne = db.Column(db.Integer, primary_key=True)
-    prod_ligne_name = db.Column(db.String(50), nullable=False)
-
-    # Clé étrangère (corrigée)
-    ID_customer = db.Column(db.Integer, db.ForeignKey("customers_list.ID_customer", ondelete="CASCADE"), nullable=False)
-
-    # Relations
-    customer = db.relationship("CustomersList", back_populates="production_lignes")
-    machines = db.relationship("Machines", back_populates="production_ligne", cascade="all, delete-orphan")
-
-    def __repr__(self):
-        return f"<ProductionLigne {self.ID_production_ligne}: {self.prod_ligne_name}>"
 
 class Manual(db.Model):
     __tablename__ = "manual"

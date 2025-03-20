@@ -114,7 +114,7 @@ def add_machine(client_id):
         new_machine = Machines(
             machine_name=form.machine_name.data,
             serial_number=form.serial_number.data,
-            modele=form.modele.data,
+            ID_model=form.model_id.data,
             production_date=form.production_date.data,
             ID_production_ligne=ligne_id
         )

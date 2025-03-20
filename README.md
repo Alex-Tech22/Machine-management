@@ -3,28 +3,31 @@
 ## Arborescence du projet
 
 ```bash
-/mon_projet_flask
+/Lachine_Management
 │── app/                 # Dossier principal de l'application
 │   ├── __init__.py      # Initialise l'application et les extensions
-│   ├── routes.py        # Définit les routes de l'application
+│   ├── routes/          # Dossier des routes
 │   ├── models.py        # Définit les modèles de base de données
-│   ├── forms.py         # Définit les formulaires Flask-WTF (si besoin)
+│   ├── forms.py         # Définit les formulaires Flask-WTF
+│   ├── config.py        # fichier de configuration du serveur web
 │   ├── static/          # Fichiers statiques (CSS, JS, images)
-│   │   ├── css/
-│   │   ├── js/
-│   │   ├── images/
+│   │   ├── css/         # Dossier des fichiers css
+│   │   ├── js/          # Dossier des fichiers Javascript
+│   │   ├── images/      # Dossier des images
+│   │   ├── logo_client/ # Dossier des logo client
+│   │   ├── qrcodes/     # Dossier de stockage des qrcodes
 │   ├── templates/       # Dossier des templates HTML
-│   │   ├── base.html    # Template de base
-│   │   ├── index.html   # Page d'accueil
-│   │   ├── login.html   # Page de connexion (si besoin)
-│── tests/               # Tests unitaires
-│   ├── test_routes.py   # Tests des routes
-│   ├── test_models.py   # Tests des modèles
-│── venv/                # Environnement virtuel Python
-│── config.py            # Configuration de l'application
+│   │   ├── auth/        # Dossier template d'authentification
+│   │   ├── client/      # Dossier template pour l'affichage des données des clients
+│   │   ├── machine/     # Dossier template pour les machines
+│   │   ├── user/        # Dossier template pour les pages lier aux utilisateurs
+│   │   ├── base.html    # Base des pages html
+│   ├── utils/           # Dossier des programme utilitaires
+│── ├── tests/           # Tests unitaires
+│── .env                 # Variables d'environnement
 │── run.py               # Point d'entrée principal du serveur Flask
 │── requirements.txt     # Dépendances du projet
-│── .gitignore           # Fichiers à ignorer par Git
+│── gitignore            # Fichiers à ignorer par Git
 │── README.md            # Documentation du projet
 ```
 
