@@ -33,6 +33,20 @@ footer {
     padding: 10px;
 }
 
+footer p {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+footer a {
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}
+
 /* Bulle utilisateur */
 .user-menu {
     position: relative;
@@ -76,4 +90,15 @@ footer {
 
 .dropdown-menu a:hover {
     background-color: #f0f0f0;
+}
+
+.mention-legale {
+    font-weight: bold;
+    text-decoration: none;
+    color: #d70000;
+}
+
+.mention-legale:hover {
+    text-decoration: underline;
+    color: #a30000;
 }

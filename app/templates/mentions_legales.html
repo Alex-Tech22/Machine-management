@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block title %}Clients - Mayekawa{% endblock %}
+
+{% block content %}
+    
+        <section>
+            <h2>1. Éditeur du site</h2>
+            <p><strong>Nom de l'entreprise :</strong> Mayekawa DAS</p>
+            <p><strong>Adresse :</strong> 123 Rue de l'Industrie, 75000 Paris, France</p>
+            <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
+            <p><strong>Email :</strong> contact@mayekawa-das.com</p>
+        </section>
+
+        <section>
+            <h2>2. Hébergement</h2>
+            <p><strong>Hébergeur :</strong> OVH</p>
+            <p><strong>Adresse :</strong> 2 rue Kellermann, 59100 Roubaix, France</p>
+            <p><strong>Téléphone :</strong> +33 9 72 10 10 07</p>
+            <p><strong>Site Web :</strong> <a href="https://www.ovh.com" target="_blank">www.ovh.com</a></p>
+        </section>
+
+        <section>
+            <h2>3. Propriété intellectuelle</h2>
+            <p>Le contenu du site (textes, images, vidéos, logos, etc.) est la propriété exclusive de Mayekawa DAS, sauf mention contraire. Toute reproduction, distribution ou utilisation sans autorisation est interdite.</p>
+        </section>
+
+        <section>
+            <h2>4. Collecte des données</h2>
+            <p>Les informations personnelles collectées sur ce site sont utilisées uniquement pour améliorer l'expérience utilisateur et ne seront jamais vendues ou partagées avec des tiers sans consentement.</p>
+        </section>
+
+        <section>
+            <h2>5. Cookies</h2>
+            <p>Ce site utilise des cookies pour améliorer l'expérience utilisateur. En naviguant sur le site, vous acceptez l'utilisation des cookies.</p>
+        </section>
+
+        <section>
+            <h2>6. Contact</h2>
+            <p>Pour toute question relative aux mentions légales, veuillez nous contacter à l'adresse <strong>contact@mayekawa-das.com</strong>.</p>
+        </section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/client.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+{% endblock %}
