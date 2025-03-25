@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField, DateField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
-from flask_wtf.file import FileAllowed, FileRequired
+from flask_wtf.file import FileAllowed
 from app import db
 from app.models import ModeleMachine
 
@@ -64,6 +64,21 @@ class AddMachineForm(FlaskForm):
             super().__init__(*args, **kwargs)
             self.model_id.choices = [(m.ID_model, m.model_name) for m in db.session.query(ModeleMachine).all()]
 
+
 class AddProductionLigneForm(FlaskForm):
     prod_ligne_name = StringField("Nom de la ligne de production", validators=[DataRequired(), Length(max=50)])
     submit = SubmitField("Ajouter la ligne")
+
+class ModeleMachineForm(FlaskForm):
+    model_name = StringField("Nom du Modèle", validators=[DataRequired(), Length(min=2, max=50)])
+    submit = SubmitField("Créer le Modèle")
+
+class StationForm(FlaskForm):
+    station_name = StringField("Nom de la Station", validators=[DataRequired(), Length(min=2, max=50)])
+    submit = SubmitField("Ajouter la Station")
+
+class SettingsForm(FlaskForm):
+    setting_name = StringField("Nom du Réglage", validators=[DataRequired(), Length(min=2, max=50)])
+    setting_type = SelectField("Type du Réglage", choices=[("Num", "Numérique"), ("Tab", "Tableau")], validators=[DataRequired()])
+    image = FileField("Image du réglage", validators=[FileAllowed(['jpg', 'jpeg', 'png'], 'Images seulement')])
+    submit = SubmitField("Ajouter le Réglage")

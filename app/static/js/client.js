@@ -120,8 +120,10 @@ function loadMachines(ligneId) {
                 machineDiv.className = "machine-card";
                 machineDiv.id = `machine-${machine.id}`;
                 machineDiv.innerHTML = `
-                    <img src="/static/images/toridas.png" alt="Machine">
-                    <p>${machine.name}</p>
+                    <a href="/machine/${machine.id}" class="machine-link">
+                        <img src="/static/images/general/toridas.png" alt="Machine">
+                        <p>${machine.name}</p>
+                    </a>
                     <button class="delete-btn" onclick="deleteMachine('${machine.id}')">🗑</button>
                 `;
                 machineContainer.appendChild(machineDiv);

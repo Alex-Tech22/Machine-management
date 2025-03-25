@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='/images/favicon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='/images/general/favicon.png') }}">
     <title>{% block title %}Mayekawa{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}    
@@ -13,8 +13,8 @@
     <!-- HEADER COMMUN -->
     <header>
         <div class="logo">
-            <a href="{{ url_for('client.clients') }}"> <!-- ✅ Corrigé : Utilisation du bon Blueprint -->
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mayekawa Logo">
+            <a href="{{ url_for('client.clients') }}">
+                <img src="{{ url_for('static', filename='images/general/logo.png') }}" alt="Mayekawa Logo">
             </a>
         </div>
         
@@ -30,6 +30,10 @@
                 <a href="{{ url_for('user.create_user') }}">Créer un compte</a>
                 {% endif %}
                 
+                {% if current_user.access_level >= 3 %}
+                <a href="{{ url_for('admin.create_model') }}">Créer un modèle</a>
+                {% endif %}
+
                 <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
             </div>
         </div>

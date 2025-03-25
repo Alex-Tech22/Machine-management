@@ -7,7 +7,6 @@ from app import db
 from app.forms import AddClientForm, AddMachineForm, AddProductionLigneForm
 from app.config import UPLOAD_FOLDER
 from PIL import Image
-from io import BytesIO
 import qrcode
 client_bp = Blueprint('client', __name__)
 
@@ -29,6 +28,7 @@ def clients():
     machine_form=machine_form)
 
 @client_bp.route("/<int:client_id>")
+# hash l'ID
 @login_required
 def get_client(client_id):
     """Récupère les informations d'un client spécifique."""
@@ -48,14 +48,14 @@ def add_client():
     form = AddClientForm()
 
     if form.validate_on_submit():
-        logo_url = "logo_client/default_logo.png"  # Image par défaut
+        logo_url = "images/logo_client/default_logo.png"  # Image par défaut
 
         # Gestion du fichier image
         if form.logo.data:
             filename = secure_filename(form.logo.data.filename)  # Sécurise le nom
             file_path = os.path.join(UPLOAD_FOLDER, filename)
             form.logo.data.save(file_path)  # Sauvegarde l'image
-            logo_url = f"logo_client/{filename}"  # Chemin pour stockage en base
+            logo_url = f"images/logo_client/{filename}"  # Chemin pour stockage en base
 
         # Création du client
         new_client = CustomersList(
@@ -73,6 +73,7 @@ def add_client():
     return render_template("client/add_client.html", form=form)
 
 @client_bp.route("/delete/<int:client_id>", methods=["DELETE"])
+# hash l'ID
 @login_required
 def delete_client(client_id):
     """Supprime un client ainsi que toutes ses données associées."""
@@ -97,6 +98,7 @@ def delete_client(client_id):
 #======================================ROUTE MACHINE======================================#
 
 @client_bp.route("/<int:client_id>/add_machine", methods=["POST"])
+# hash l'ID
 @login_required
 def add_machine(client_id):
     client = CustomersList.query.get_or_404(client_id)
@@ -144,6 +146,7 @@ def add_machine(client_id):
     return redirect(url_for("client.clients"))
 
 @client_bp.route("/<int:client_id>/production_ligne/<int:ligne_id>")
+# hash l'ID
 @login_required
 def get_machines(client_id, ligne_id):
     """Récupère les machines affectées à une ligne de production."""
@@ -167,6 +170,7 @@ def delete_machine(machine_id):
 #======================================ROUTE LIGNE PROD======================================#
 
 @client_bp.route("/<int:client_id>/production_lignes", methods=["GET"])
+# hash l'ID
 @login_required
 def get_production_lignes(client_id):
     """Récupère les lignes de production d'un client."""
@@ -183,6 +187,7 @@ def get_production_lignes(client_id):
     return jsonify(lignes_data)
 
 @client_bp.route("/<int:client_id>/add_production_ligne", methods=["POST"])
+# hash l'ID
 @login_required
 def add_production_ligne(client_id):
     """Ajoute une ligne de production à un client."""
@@ -204,6 +209,7 @@ def add_production_ligne(client_id):
 
 
 @client_bp.route("/delete_production_ligne/<int:ligne_id>", methods=["POST"])
+# hash l'ID
 @login_required
 def delete_production_ligne(ligne_id):
     ligne = ProductionLigne.query.get(ligne_id)

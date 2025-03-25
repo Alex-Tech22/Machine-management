@@ -13,6 +13,7 @@ class Config:
     if not SECRET_KEY:
         raise ValueError("❌ SECRET_KEY non définie !")
     
+    # Sel pour flask-security
     SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
     if not SECURITY_PASSWORD_SALT:
         raise ValueError("❌ SECURITY_PASSWORD_SALT non défini dans .env !")

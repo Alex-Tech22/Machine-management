@@ -15,7 +15,7 @@
         {% for client in clients %}
             <div class="client-item">
                 <button class="client-btn" onclick="loadClient('{{ client.ID_customer }}')">
-                    <img src="{{ url_for('static', filename=client.logo) if client.logo else url_for('static', filename='logo_client/default_logo.png') }}" 
+                    <img src="{{ url_for('static', filename=client.logo) if client.logo else url_for('static', filename='images/logo_client/default_logo.png') }}" 
                     alt="Logo du client" 
                     class="img-client">
                     <p>{{ client.customers_name }}</p>
@@ -88,7 +88,6 @@
             </form>
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}

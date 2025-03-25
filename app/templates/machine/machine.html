@@ -7,7 +7,54 @@
 {% block title %}Machine - Mayekawa{% endblock %}
 
 {% block content %}
-<button class="Station1-btn" onclick="">🗑</button>
+<section class="machine-info">
+    <h2>{{ machine.machine_name }}</h2>
+    <p><strong>Numéro de série :</strong> {{ machine.serial_number }}</p>
+    <p><strong>Date de production :</strong> {{ machine.production_date }}</p>
+    <p><strong>Modèle :</strong> {{ machine.modele_machine.model_name }}</p>
+    <img src="{{ url_for('static', filename='qrcodes/' + machine.qrcode) }}" alt="QR Code de la machine">
+</section>
+
+<!-- Onglets -->
+<div class="tabs">
+    <button class="tab-button active" onclick="openTab(event, 'reglages')">Réglages</button>
+    <button class="tab-button" onclick="openTab(event, 'manuel')">Manuel</button>
+    <button class="tab-button" onclick="openTab(event, 'historique')">Historique</button>
+</div>
+
+<!-- Contenu des catégories -->
+<div id="reglages" class="tab-content active">
+    <h3>Réglages</h3>
+    <ul>
+        {% for setting in machine.settings %}
+            <li><strong>{{ setting.setting_name }}:</strong> {{ setting.setting_type }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="manuel" class="tab-content">
+    <h3>Manuel</h3>
+    <p>Version : {{ machine.manual.manual_version }}</p>
+    <p><a href="{{ machine.manual.manual_link }}" target="_blank">Télécharger le manuel</a></p>
+</div>
+
+<div id="historique" class="tab-content">
+    <h3>Historique</h3>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Technicien</th>
+            <th>Remarque</th>
+        </tr>
+        {% for entry in machine.history %}
+            <tr>
+                <td>{{ entry.revisions_date }}</td>
+                <td>{{ entry.tech_name }}</td>
+                <td>{{ entry.remarks }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
 
 {% block extra_js %}

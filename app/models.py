@@ -4,13 +4,6 @@ from argon2.exceptions import VerifyMismatchError
 from app import db
 from app import ph
 
-# Table d'association entre ModeleMachine et Station
-associated_models_stations = db.Table(
-    "associated_models_stations",
-    db.Column("ID_model", db.Integer, db.ForeignKey("modele_machine.ID_model"), primary_key=True),
-    db.Column("ID_station", db.Integer, db.ForeignKey("station.ID_station"), primary_key=True)
-)
-
 class User(UserMixin, db.Model):
     __tablename__ = 'user_profile'
 
@@ -138,8 +131,7 @@ class ModeleMachine(db.Model):
 
     # Relations
     machines = db.relationship("Machines", back_populates="modele_machine")
-    stations = db.relationship("Station", secondary=associated_models_stations, back_populates="modele_machines")
-
+    stations = db.relationship("Station", back_populates="modele_machines", cascade="all, delete-orphan")
     def __repr__(self):
         return f"<ModeleMachine {self.ID_model}: {self.model_name}>"
 
@@ -154,7 +146,7 @@ class Station(db.Model):
     ID_model = db.Column(db.Integer, db.ForeignKey("modele_machine.ID_model"), nullable=False)
 
     # Relations
-    modele_machines = db.relationship("ModeleMachine", secondary=associated_models_stations, back_populates="stations")
+    modele_machines = db.relationship("ModeleMachine", back_populates="stations")
     settings = db.relationship("Settings", back_populates="station", cascade="all, delete-orphan")
     
 class Settings(db.Model):
@@ -178,8 +170,8 @@ class SettingValue(db.Model):
 
     # Colonnes
     ID_setting_value = db.Column(db.Integer, primary_key=True)
-    row_index = db.Column(db.Integer, nullable=True)  # Pour les tableaux 2D
-    col_index = db.Column(db.Integer, nullable=True)  # Pour les tableaux 2D
+    row_index = db.Column(db.Integer, nullable=True)
+    col_index = db.Column(db.Integer, nullable=True)
     value = db.Column(db.Float, nullable=False)
 
     # Clés étrangères
@@ -187,8 +179,6 @@ class SettingValue(db.Model):
 
     # Relations
     setting = db.relationship("Settings", back_populates="values")
-
-
 
 class Manual(db.Model):
     __tablename__ = "manual"

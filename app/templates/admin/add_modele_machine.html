@@ -1,0 +1,104 @@
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_add_modele.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Gestion des Modèles{% endblock %}
+
+{% block content %}
+<div class="vs-code-layout">
+    <!-- Panneau de gauche : Modèles -->
+    <div class="sidebar">
+        <h2>📁 Modèles</h2>
+        <ul>
+            {% for m in all_models %}
+            <li class="selectable" data-type="model" data-id="{{ m.ID_model }}">
+                <a href="{{ url_for('admin.create_model', model_id=m.ID_model) }}"
+                   class="{% if model and m.ID_model == model.ID_model %}active{% endif %}">
+                    {{ m.model_name }}
+                </a>
+                <form method="POST" action="{{ url_for('admin.delete_dynamic', obj_type='model', obj_id=m.ID_model) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <form method="POST" action="{{ url_for('admin.create_model') }}">
+            {{ model_form.hidden_tag() }}
+            {{ model_form.model_name.label }}
+            {{ model_form.model_name(class="form-control") }}
+            <button type="submit" class="btn">➕ Ajouter modèle</button>
+        </form>
+    </div>
+
+    <!-- Panneau de droite : Détail du modèle -->
+    <div class="main-panel">
+        {% if model %}
+            <div class="delete-toolbar">
+                <button class="btn btn-danger" onclick="deleteSelected(event)">
+                    🗑 Supprimer l'élément sélectionné
+                </button>
+            </div>
+            <h2>🛠️ {{ model.model_name }}</h2>
+
+            <!-- Ajout d'une station -->
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.add_station', model_id=model.ID_model) }}">
+                {{ station_form.hidden_tag() }}
+                <div class="form-row">
+                    {{ station_form.station_name.label }}
+                    {{ station_form.station_name(class="form-control") }}
+                    <button type="submit" class="btn btn-success">Ajouter station</button>
+                </div>
+            </form>
+
+            <!-- Liste des stations + réglages -->
+            <div class="stations-section">
+                {% for station in model.stations %}
+                <div class="station-block selectable" data-type="station" data-id="{{ station.ID_station }}">
+                    <h4>📌 {{ station.station_name }}</h4>
+                    <form method="POST" action="{{ url_for('admin.delete_dynamic', obj_type='station', obj_id=station.ID_station) }}">
+                        <button type="submit" class="btn btn-sm btn-danger">🗑 Supprimer station</button>
+                    </form>
+                    <!-- Formulaire d’ajout de réglage -->
+                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.add_setting', station_id=station.ID_station) }}">
+                        {{ setting_forms[station.ID_station].hidden_tag() }}
+                        {{ setting_forms[station.ID_station].setting_name.label }}
+                        {{ setting_forms[station.ID_station].setting_name(class="form-control") }}
+                        {{ setting_forms[station.ID_station].setting_type.label }}
+                        {{ setting_forms[station.ID_station].setting_type(class="form-control") }}
+                        {{ setting_forms[station.ID_station].image.label }}
+                        {{ setting_forms[station.ID_station].image(class="form-control") }}
+                        {{ setting_forms[station.ID_station].submit(class="btn btn-primary btn-sm") }}
+                    </form>
+                    <ul class="settings-list">
+                        {% for setting in station.settings %}
+                            <li class="selectable" data-type="setting" data-id="{{ setting.ID_settings }}">
+                                <strong>{{ setting.setting_name }}</strong> ({{ setting.setting_type }})
+                            
+                                {% if setting.picture_link %}
+                                    <img src="{{ url_for('static', filename='images/settings/' ~ setting.picture_link) }}"
+                                        class="setting-img" alt="Image réglage">
+                                {% endif %}
+                            
+                                <form method="POST" action="{{ url_for('admin.delete_dynamic', obj_type='setting', obj_id=setting.ID_settings) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
+                                </form>
+                            </li>                        
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Sélectionnez un modèle à gauche pour commencer.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

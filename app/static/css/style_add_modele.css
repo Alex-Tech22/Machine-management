@@ -1,0 +1,65 @@
+.vs-code-layout {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 250px;
+    background: #1e1e1e;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.sidebar a.active {
+    background-color: #007acc;
+}
+
+.main-panel {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+}
+
+.station-block {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #007acc;
+}
+
+.station-img, .setting-img {
+    max-width: 150px;
+    display: block;
+    margin: 10px 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.selected {
+    outline: 2px solid red;
+    background-color: #ffeaea;
+}
+
+button.btn-danger,
+button.btn-outline-danger {
+    margin-left: 8px;
+    font-size: 0.8rem;
+}
+form {
+    display: inline;
+}

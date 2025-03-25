@@ -53,21 +53,8 @@
 
 ## Utilisation
 
-1. Configurez l'application en modifiant `config.py` selon vos besoins.
+1.
 
-2. Initialisez la base de données :
-    ```bash
-    flask db init
-    flask db migrate -m "Initial migration."
-    flask db upgrade
-    ```
-
-3. Lancez le serveur Flask :
-    ```bash
-    flask run
-    ```
-
-4. Accédez à l'application via `http://127.0.0.1:5000/`.
 
 ## Tests
 
