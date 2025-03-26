@@ -141,6 +141,7 @@ function loadMachines(ligneId) {
 //======================================SUPPRESSION DE DONNÉES======================================//
 
 // Supprimer un client
+
 function deleteClient(clientId) {
     fetch(`/client/delete/${clientId}`, { method: "DELETE" })
     .then(response => response.json())

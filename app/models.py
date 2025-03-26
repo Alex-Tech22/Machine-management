@@ -164,6 +164,7 @@ class Settings(db.Model):
     # Relations
     station = db.relationship("Station", back_populates="settings")
     values = db.relationship("SettingValue", back_populates="setting", cascade="all, delete-orphan")
+    default_values = db.relationship("SettingDefaultValue", back_populates="setting")
 
 class SettingValue(db.Model):
     __tablename__ = "setting_value"
@@ -180,6 +181,22 @@ class SettingValue(db.Model):
     
     # Relations
     setting = db.relationship("Settings", back_populates="values")
+
+class SettingDefaultValue(db.Model):
+    __tablename__ = "setting_default_value"
+
+    # Colonnes
+    ID_setting_default_value = db.Column(db.Integer, primary_key=True)
+    row_index = db.Column(db.Integer, nullable=True)
+    col_index = db.Column(db.Integer, nullable=True)
+    default_value = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String(50), nullable=True)
+
+    # Clés étrangères
+    ID_settings = db.Column(db.Integer, db.ForeignKey("settings.ID_settings"), nullable=False)
+    
+    # Relations
+    setting = db.relationship("Settings", back_populates="default_values")
 
 class Manual(db.Model):
     __tablename__ = "manual"

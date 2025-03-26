@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename 
-from app.models import db, ModeleMachine, Station, Settings, SettingValue
+from app.models import db, ModeleMachine, Station, Settings, SettingValue, SettingDefaultValue
 from app.forms import ModeleMachineForm, StationForm, SettingsForm
 import os
 from PIL import Image
@@ -134,30 +134,29 @@ def add_setting(station_id):
 def add_setting_value(setting_id):
     setting = Settings.query.get_or_404(setting_id)
     setting_type = request.form.get("setting_type")
-    value = request.form.get("value", type=float)
-    name = request.form.get("name")  # <- important pour les réglages numériques
+    name = request.form.get("name")
+    default_value = request.form.get("value", type=float)
 
     if setting_type == "Tab":
         row = request.form.get("row_index", type=int)
         col = request.form.get("col_index", type=int)
-        setting_value = SettingValue(
-            value=value,
+        setting_value = SettingDefaultValue(
+            default_value=default_value,
             row_index=row,
             col_index=col,
-            ID_settings=setting_id,
-            name=None  # Optionnel, inutile pour tableau
+            ID_settings=setting_id
         )
     else:
-        setting_value = SettingValue(
-            value=value,
-            row_index=None,
-            col_index=None,
-            ID_settings=setting_id,
-            name=name  # 👈 Stocke le nom ici
+        name = request.form.get("name")
+        setting_value = SettingDefaultValue(
+            default_value=default_value,
+            name=name,
+            ID_settings=setting_id
         )
 
     db.session.add(setting_value)
     db.session.commit()
+
     flash("✅ Valeur ajoutée", "success")
 
     return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
@@ -170,20 +169,21 @@ def update_table_values(setting_id):
     setting = Settings.query.get_or_404(setting_id)
     
     # Nettoyer les anciennes valeurs si nécessaire
-    SettingValue.query.filter_by(ID_settings=setting_id).delete()
+    SettingDefaultValue.query.filter_by(ID_settings=setting_id).delete()
 
     for key, value in request.form.items():
         if key.startswith("value_") and value:
             _, row, col = key.split("_")
-            new_val = SettingValue(
+            new_val = SettingDefaultValue(
                 ID_settings=setting_id,
                 row_index=int(row),
                 col_index=int(col),
-                value=float(value)
+                default_value=float(value)
             )
             db.session.add(new_val)
 
     db.session.commit()
+
     flash("✅ Valeurs mises à jour avec succès", "success")
     return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
 

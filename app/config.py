@@ -44,3 +44,7 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")  # Ton email
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")  # Ton mot de passe
+
+    # Configuration de l'url du serveur
+    PREFERRED_URL_SCHEME = "https"
+    SERVER_NAME = "mayekawa_service"

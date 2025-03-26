@@ -85,10 +85,10 @@
                             <div class="setting-values" id="setting-values-{{ setting.ID_settings }}">
                               {% if setting.setting_type == 'Num' %}
                                 <!-- Affichage d'une valeur numérique simple -->
-                                {% for val in setting.values %}
-                                  <p><strong>{{ val.name or "Nom inconnu" }} :</strong> {{ val.value }}</p>
+                                {% for val in setting.default_values %}
+                                  <p><strong>{{ val.name or "Nom inconnu" }} :</strong> {{ val.default_value }}</p>
                                 {% endfor %}
-                                <button class="btn btn-sm btn-outline-primary" onclick="openValueModal('{{ setting.ID_settings }}', 'Num')">➕ Ajouter valeur</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="openValueModal('{{ setting.ID_settings }}', 'Num')">➕ Ajouter valeur</button>                            
                               {% elif setting.setting_type == 'Tab' %}
                               <form method="POST" action="{{ url_for('admin.update_table_values', setting_id=setting.ID_settings) }}">
                                 <!--Tableau-->>
