@@ -47,17 +47,20 @@ function openValueModal(settingId, settingType) {
     modalSettingId.value = settingId;
     modalSettingType.value = settingType;
 
-    // Affiche ou cache les champs selon le type
+    const form = document.getElementById("valueForm");
+    form.action = `/admin/add_value/${settingId}`;  // 🧩 Ajout essentiel ici
+
     if (settingType === "Num") {
         numericInput.style.display = "block";
         tableInput.style.display = "none";
-    } else if (settingType === "Tab") {
+    } else {
         numericInput.style.display = "none";
         tableInput.style.display = "block";
     }
 
     modal.style.display = "block";
 }
+
 
 function closeModal() {
     const modal = document.getElementById("valueModal");

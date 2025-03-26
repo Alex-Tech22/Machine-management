@@ -173,10 +173,11 @@ class SettingValue(db.Model):
     row_index = db.Column(db.Integer, nullable=True)
     col_index = db.Column(db.Integer, nullable=True)
     value = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String(50), nullable=True)
 
     # Clés étrangères
     ID_settings = db.Column(db.Integer, db.ForeignKey("settings.ID_settings", ondelete="CASCADE"), nullable=False)
-
+    
     # Relations
     setting = db.relationship("Settings", back_populates="values")
 
