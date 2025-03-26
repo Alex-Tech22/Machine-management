@@ -15,6 +15,7 @@ login_manager.login_view = "auth.login"
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.jinja_env.globals.update(chr=chr)
 
     db.init_app(app)
     mail.init_app(app)

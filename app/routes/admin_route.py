@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename 
-from app.models import db, ModeleMachine, Station, Settings
+from app.models import db, ModeleMachine, Station, Settings, SettingValue
 from app.forms import ModeleMachineForm, StationForm, SettingsForm
 import os
 from PIL import Image
@@ -40,14 +40,17 @@ def create_model():
             }
 
     all_models = ModeleMachine.query.all()
+    column_labels = ["A", "B", "C", "Pression du ressort (Kg)"]
+    row_labels = ["ST4", "ST5", "ST6", "ST7", "ST8", "ST9"]
 
     return render_template("admin/add_modele_machine.html",
-                           model_form=model_form,
-                           station_form=station_form,
-                           setting_forms=setting_forms,
-                           model=model,
-                           all_models=all_models)
-
+                       model_form=model_form,
+                       station_form=station_form,
+                       setting_forms=setting_forms,
+                       model=model,
+                       all_models=all_models,
+                       column_labels=column_labels,
+                       row_labels=row_labels)
 
 @admin_bp.route('/add_station/<int:model_id>', methods=['GET', 'POST'])
 @login_required
@@ -112,7 +115,49 @@ def add_setting(station_id):
     station = Station.query.get_or_404(station_id)
     return redirect(url_for('admin.create_model', model_id=station.ID_model))
 
+@admin_bp.route('/add_value/<int:setting_id>', methods=['POST'])
+@login_required
+def add_setting_value(setting_id):
+    setting = Settings.query.get_or_404(setting_id)
+    setting_type = request.form.get("setting_type")
 
+    value = request.form.get("value", type=float)
+
+    if setting_type == "Tab":
+        row = request.form.get("row_index", type=int)
+        col = request.form.get("col_index", type=int)
+        setting_value = SettingValue(value=value, row_index=row, col_index=col, ID_settings=setting_id)
+    else:
+        setting_value = SettingValue(value=value, row_index=None, col_index=None, ID_settings=setting_id)
+
+    db.session.add(setting_value)
+    db.session.commit()
+    flash("✅ Valeur ajoutée", "success")
+
+    return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
+
+@admin_bp.route('/update_table/<int:setting_id>', methods=['POST'])
+@login_required
+def update_table_values(setting_id):
+    setting = Settings.query.get_or_404(setting_id)
+    
+    # Nettoyer les anciennes valeurs si nécessaire
+    SettingValue.query.filter_by(ID_settings=setting_id).delete()
+
+    for key, value in request.form.items():
+        if key.startswith("value_") and value:
+            _, row, col = key.split("_")
+            new_val = SettingValue(
+                ID_settings=setting_id,
+                row_index=int(row),
+                col_index=int(col),
+                value=float(value)
+            )
+            db.session.add(new_val)
+
+    db.session.commit()
+    flash("✅ Valeurs mises à jour avec succès", "success")
+    return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
 
 #=====================================SUPPRESSION=====================================#
 

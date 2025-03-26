@@ -74,20 +74,68 @@
                     </form>
                     <ul class="settings-list">
                         {% for setting in station.settings %}
-                            <li class="selectable" data-type="setting" data-id="{{ setting.ID_settings }}">
-                                <strong>{{ setting.setting_name }}</strong> ({{ setting.setting_type }})
-                            
-                                {% if setting.picture_link %}
-                                    <img src="{{ url_for('static', filename='images/settings/' ~ setting.picture_link) }}"
-                                        class="setting-img" alt="Image réglage">
-                                {% endif %}
-                            
-                                <form method="POST" action="{{ url_for('admin.delete_dynamic', obj_type='setting', obj_id=setting.ID_settings) }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
-                                </form>
-                            </li>                        
+                          <li class="selectable" data-type="setting" data-id="{{ setting.ID_settings }}" data-type-setting="{{ setting.setting_type }}">
+                            <strong>{{ setting.setting_name }}</strong> ({{ setting.setting_type }})
+                      
+                            {% if setting.picture_link %}
+                              <img src="{{ url_for('static', filename='images/settings/' ~ setting.picture_link) }}"
+                                   class="setting-img" alt="Image réglage">
+                            {% endif %}
+                            <!-- Zone de valeurs -->
+                            <div class="setting-values" id="setting-values-{{ setting.ID_settings }}">
+                              {% if setting.setting_type == 'Num' %}
+                                <!-- Affichage d'une valeur numérique simple -->
+                                {% for val in setting.values %}
+                                  <p><strong>Valeur :</strong> {{ val.value }}</p>
+                                {% endfor %}
+                                <button class="btn btn-sm btn-outline-primary" onclick="openValueModal('{{ setting.ID_settings }}', 'Num')">➕ Ajouter valeur</button>
+                              {% elif setting.setting_type == 'Tab' %}
+                              <form method="POST" action="{{ url_for('admin.update_table_values', setting_id=setting.ID_settings) }}">
+                                <!--Tableau-->>
+                                <table class="table-setting">
+                                  <thead>
+                                    <tr>
+                                      <th>ST.</th>
+                                      <th>A</th>
+                                      <th>B</th>
+                                      <th>C</th>
+                                      <th>Pression du ressort (Kg)</th>
+                                    </tr>
+                                  </thead>                                  
+                                  <tbody>
+                                    {% for row_label in row_labels %}
+                                      {% set row_index = loop.index0 %}
+                                      <tr>
+                                        <td>{{ row_label }}</td>
+                                        {% for col_index in range(column_labels | length) %}
+                                          <td>
+                                            {% set current_value = None %}
+                                            {% for val in setting.values %}
+                                              {% if val.row_index == row_index and val.col_index == col_index %}
+                                                {% set current_value = val.value %}
+                                              {% endif %}
+                                            {% endfor %}
+                                            <input type="number"
+                                                   name="value_{{ row_index }}_{{ col_index }}"
+                                                   value="{{ current_value if current_value is not none else '' }}"
+                                                   step="0.01"
+                                                   class="table-input">
+                                          </td>
+                                        {% endfor %}
+                                      </tr>
+                                    {% endfor %}
+                                  </tbody>                                  
+                                </table>
+                                <button type="submit" class="btn btn-success btn-sm mt-2">💾 Enregistrer les modifications</button>
+                              </form>    
+                              {% endif %}                          
+                            </div>
+                            <form method="POST" action="{{ url_for('admin.delete_dynamic', obj_type='setting', obj_id=setting.ID_settings) }}">
+                              <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
+                            </form>
+                          </li>
                         {% endfor %}
-                    </ul>
+                      </ul>
                 </div>
                 {% endfor %}
             </div>
@@ -96,6 +144,46 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Modal d'ajout -->
+<div id="valueModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <form id="valueForm" method="POST">
+        <input type="hidden" name="setting_id" id="modalSettingId">
+        <input type="hidden" name="setting_type" id="modalSettingType">
+  
+        <div id="numericInput">
+          <label>Valeur :</label>
+          <input type="number" step="0.01" name="value">
+        </div>
+  
+        <input type="hidden" name="setting_id" id="modalSettingId">
+        <input type="hidden" name="setting_type" id="modalSettingType">
+
+        <!-- tableInput visible seulement si tableau -->
+        <div id="tableInput" style="display:none;">
+          <label>Ligne :</label>
+          <select name="row_index">
+            {% for i in range(row_labels | length) %}
+              <option value="{{ i }}">{{ row_labels[i] }}</option>
+            {% endfor %}
+          </select>
+
+          <label>Colonne :</label>
+          <select name="col_index">
+            {% for i in range(column_labels | length) %}
+              <option value="{{ i }}">{{ column_labels[i] }}</option>
+            {% endfor %}
+          </select>
+
+          <label>Valeur :</label>
+          <input type="number" name="value" step="0.01">
+        </div>
+        <button type="submit" class="btn btn-success btn-sm">💾 Enregistrer</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}
 
 {% block extra_js %}
