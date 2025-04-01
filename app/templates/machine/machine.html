@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_machine.css') }}">
 {% endblock %}
 
@@ -8,11 +9,15 @@
 
 {% block content %}
 <section class="machine-info">
-    <h2>{{ machine.machine_name }}</h2>
-    <p><strong>Numéro de série :</strong> {{ machine.serial_number }}</p>
-    <p><strong>Date de production :</strong> {{ machine.production_date }}</p>
-    <p><strong>Modèle :</strong> {{ machine.modele_machine.model_name }}</p>
-    <img src="{{ url_for('static', filename='qrcodes/' + machine.qrcode) }}" alt="QR Code de la machine">
+    <div class="machine-img">
+        <img src="{{ url_for('static', filename='/' + machine.qrcode) }}" alt="QR Code de la machine">
+    </div>
+    <div class="machine-details">
+        <h2>{{ machine.machine_name }}</h2>
+        <p><strong>Numéro de série :</strong> {{ machine.serial_number }}</p>
+        <p><strong>Date de mise en service :</strong> {{ machine.production_date }}</p>
+        <p><strong>Modèle :</strong> {{ machine.modele_machine.model_name }}</p>
+    </div>
 </section>
 
 <!-- Onglets -->
@@ -25,17 +30,62 @@
 <!-- Contenu des catégories -->
 <div id="reglages" class="tab-content active">
     <h3>Réglages</h3>
-    <ul>
-        {% for setting in machine.settings %}
-            <li><strong>{{ setting.setting_name }}:</strong> {{ setting.setting_type }}</li>
+    {% for station_name, settings in settings_by_station.items() %}
+        <h4>{{ station_name }}</h4>
+        {% for setting in settings %}
+            <div class="setting-block">
+                {% if setting.picture_link %}
+                <img src="{{ url_for('static', filename='images/settings/' ~ setting.picture_link) }}"
+                    class="setting-img"
+                    alt="Image réglage"
+                    onclick="openImageModal(this.src)">
+                {% endif %}
+                
+                <div class="setting-details">
+                    <p><strong>{{ setting.setting_name }}</strong> ({{ setting.setting_type }})</p>
+                    {% if setting.setting_type == 'Num' %}
+                        {% for val in setting.default_values %}
+                            <p><strong>{{ val.name or "Nom inconnu" }} :</strong> {{ val.default_value }}</p>
+                        {% endfor %}
+                    {% elif setting.setting_type == 'Tab' %}
+                        <table class="table-setting">
+                            <thead>
+                                <tr>
+                                    <th>ST.</th>
+                                    {% for col in column_labels %}
+                                        <th>{{ col }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row_label in row_labels %}
+                                    {% set row_index = loop.index0 %}
+                                    <tr>
+                                        <td>{{ row_label }}</td>
+                                        {% for col_index in range(column_labels | length) %}
+                                            <td>
+                                                {{ value_map[(setting.ID_settings, row_index, col_index)] if (setting.ID_settings, row_index, col_index) in value_map else '' }}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    {% endfor %}
 </div>
 
 <div id="manuel" class="tab-content">
     <h3>Manuel</h3>
-    <p>Version : {{ machine.manual.manual_version }}</p>
-    <p><a href="{{ machine.manual.manual_link }}" target="_blank">Télécharger le manuel</a></p>
+    {% if machine.manual %}
+        <p>Version : {{ machine.manual.manual_version }}</p>
+        <p><a href="{{ machine.manual.manual_link }}" target="_blank">📄 Télécharger le manuel</a></p>
+    {% else %}
+        <p>Aucun manuel disponible.</p>
+    {% endif %}
 </div>
 
 <div id="historique" class="tab-content">
@@ -55,8 +105,14 @@
         {% endfor %}
     </table>
 </div>
+
+<!-- Modal pour l’agrandissement d’image -->
+<div id="imageModal" class="modal" onclick="closeImageModal()">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal-img">
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="machine.js"></script>
+<script src="{{ url_for('static', filename='js/machine.js') }}"></script>
 {% endblock %}

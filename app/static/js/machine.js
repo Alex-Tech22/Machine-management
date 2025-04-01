@@ -11,3 +11,14 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+function openImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modal-img");
+    modal.style.display = "block";
+    modalImg.src = src;
+}
+
+function closeImageModal() {
+    document.getElementById("imageModal").style.display = "none";
+}

@@ -71,6 +71,7 @@ class AddProductionLigneForm(FlaskForm):
 
 class ModeleMachineForm(FlaskForm):
     model_name = StringField("Nom du Modèle", validators=[DataRequired(), Length(min=2, max=50)])
+    manual_file = FileField("Fichier PDF du manuel", validators=[FileAllowed(['pdf'], 'Seuls les fichiers PDF sont autorisés.')])
     submit = SubmitField("Créer le Modèle")
 
 class StationForm(FlaskForm):

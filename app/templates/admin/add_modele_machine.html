@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="vs-code-layout">
-    <!-- Panneau de gauche : Modèles -->
+    <!-- Panneau de gauche : Modèles -->   
     <div class="sidebar">
         <h2>📁 Modèles</h2>
         <ul>
@@ -40,6 +40,15 @@
                 <button class="btn btn-danger" onclick="deleteSelected(event)">
                     🗑 Supprimer l'élément sélectionné
                 </button>
+                <div class="form-group">
+                  {{ model_form.manual_file.label }}
+                  {{ model_form.manual_file(class="form-control") }}
+                  {% if model.manual_filename %}
+                      <p>📄 <a href="{{ url_for('static', filename='manuel/' ~ model.manual_filename) }}" target="_blank">
+                          Voir le manuel actuel
+                      </a></p>
+                  {% endif %}
+                </div> 
             </div>
             <h2>🛠️ {{ model.model_name }}</h2>
 
@@ -91,7 +100,7 @@
                                 <button class="btn btn-sm btn-outline-primary" onclick="openValueModal('{{ setting.ID_settings }}', 'Num')">➕ Ajouter valeur</button>                            
                               {% elif setting.setting_type == 'Tab' %}
                               <form method="POST" action="{{ url_for('admin.update_table_values', setting_id=setting.ID_settings) }}">
-                                <!--Tableau-->>
+                                <!--Tableau-->
                                 <table class="table-setting"> 
                                   <thead>
                                     <tr>
@@ -104,27 +113,27 @@
                                   </thead>                                  
                                   <tbody>
                                     {% for row_label in row_labels %}
-                                      {% set row_index = loop.index0 %}
+                                    {% set row_index = loop.index0 %}
                                       <tr>
-                                        <td>{{ row_label }}</td>
-                                        {% for col_index in range(column_labels | length) %}
-                                          <td>
-                                            {% set current_value = None %}
-                                            {% for val in setting.values %}
-                                              {% if val.row_index == row_index and val.col_index == col_index %}
-                                                {% set current_value = val.value %}
-                                              {% endif %}
-                                            {% endfor %}
-                                            <input type="number"
+                                          <td>{{ row_label }}</td>
+                                          {% for col_index in range(column_labels | length) %}
+                                            <td>
+                                              {% set current_value = None %}
+                                              {% for val in setting.default_values %}
+                                                {% if val.row_index == row_index and val.col_index == col_index %}
+                                                  {% set current_value = val.default_value %}
+                                                {% endif %}
+                                              {% endfor %}
+                                              <input type="number"
                                                     name="value_{{ row_index }}_{{ col_index }}"
-                                                    value="{{ value_map[(setting.ID_settings, row_index, col_index)] if (setting.ID_settings, row_index, col_index) in value_map else '' }}"
+                                                    value="{{ current_value if current_value is not none else '' }}"
                                                     step="0.01"
                                                     class="table-input">
-                                          </td>
-                                        {% endfor %}
+                                            </td>
+                                          {% endfor %}
                                       </tr>
                                     {% endfor %}
-                                  </tbody>                                  
+                                  </tbody>                                                                                 
                                 </table>
                                 <button type="submit" class="btn btn-success btn-sm mt-2">💾 Enregistrer les modifications</button>
                               </form>    

@@ -22,9 +22,24 @@ def create_model():
     model = None
     setting_forms = {}
 
+    manual_folder = os.path.join(current_app.static_folder, 'manuel')
+    manuals = [f for f in os.listdir(manual_folder) if f.endswith('.pdf')]
+
+    model_form.manual_file.choices = [(m, m) for m in manuals]
+
     # Création d’un nouveau modèle
     if model_form.validate_on_submit():
-        new_model = ModeleMachine(model_name=model_form.model_name.data)
+        filename = None
+        if model_form.manual_file.data:
+            file = model_form.manual_file.data
+            filename = secure_filename(file.filename)
+            pdf_path = os.path.join(current_app.static_folder, "manuel", filename)
+            file.save(pdf_path)
+
+        new_model = ModeleMachine(
+            model_name=model_form.model_name.data,
+            manual_filename=filename
+        )
         db.session.add(new_model)
         db.session.commit()
         return redirect(url_for('admin.create_model', model_id=new_model.ID_model))
@@ -38,6 +53,13 @@ def create_model():
                 station.ID_station: SettingsForm(prefix=f"setting_{station.ID_station}")
                 for station in model.stations
             }
+        if request.method == 'POST' and model_form.manual_file.data:
+            file = model_form.manual_file.data
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.static_folder, "manuel", filename))
+            model.manual_filename = filename
+            db.session.commit()
+
 
     all_models = ModeleMachine.query.all()
     column_labels = ["A", "B", "C", "Pression du ressort (Kg)"]
@@ -49,9 +71,10 @@ def create_model():
         for station in model.stations:
             for setting in station.settings:
                 if setting.setting_type == "Tab":
-                    for val in setting.values:
+                    for val in setting.default_values:
                         key = (setting.ID_settings, val.row_index, val.col_index)
-                        value_map[key] = val.value
+                        value_map[key] = val.default_value
+
 
     return render_template(
         "admin/add_modele_machine.html",
@@ -183,8 +206,7 @@ def update_table_values(setting_id):
             db.session.add(new_val)
 
     db.session.commit()
-
-    flash("✅ Valeurs mises à jour avec succès", "success")
+    flash("✅ Valeurs par défaut mises à jour avec succès", "success")
     return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
 
 #=====================================SUPPRESSION=====================================#

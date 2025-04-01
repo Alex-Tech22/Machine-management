@@ -1,80 +1,212 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    text-align: center;
-}
-
-header {
-    background-color: #0073e6;
-    color: white;
-    padding: 15px;
-}
-
+/* ==================== MACHINE INFO ==================== */
 .machine-info {
-    background: white;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
     padding: 20px;
-    margin: 20px auto;
-    width: 60%;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    background-color: #f8f8f8;
+    border-radius: 12px;
 }
 
-img {
-    width: 150px;
-    margin-top: 10px;
+.machine-img img {
+    width: 160px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.machine-details {
+    flex: 1;
+    min-width: 250px;
+    text-align: left;
+}
+
+.machine-details h2 {
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.machine-details p {
+    margin: 4px 0;
+}
+
+/* ==================== TABS ==================== */
 .tabs {
-    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .tab-button {
-    background-color: #0073e6;
-    color: white;
+    background-color: #eee;
     border: none;
     padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #333;
     cursor: pointer;
-    margin-right: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.tab-button:hover {
+    background-color: #ddd;
 }
 
 .tab-button.active {
-    background-color: #0056b3;
+    background-color: #005baa;
+    color: white;
 }
 
-.tab-content {
-    display: none;
-    background: white;
+/* ==================== SETTINGS BLOCK ==================== */
+.setting-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    background: #f8f8f8;
+    border-radius: 12px;
     padding: 20px;
-    margin: 20px auto;
-    width: 60%;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.tab-content.active {
-    display: block;
+.setting-block img.setting-img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
 }
 
-table {
+.setting-details p {
+    margin: 4px 0;
+}
+
+.setting-details {
+    flex: 1;
+    min-width: 250px;
+}
+
+.setting-details p {
+    margin: 6px 0;
+}
+
+/* ==================== TABLE ==================== */
+.table-setting {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.table-setting th,
+.table-setting td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.table-setting th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* ==================== HISTORIQUE ==================== */
+#historique table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
-table, th, td {
+#historique th,
+#historique td {
     border: 1px solid #ddd;
     padding: 8px;
+    text-align: center;
 }
 
-th {
-    background-color: #0073e6;
-    color: white;
+#historique th {
+    background-color: #f0f0f0;
 }
 
-footer {
-    background: #333;
-    color: white;
-    padding: 10px;
+/* ==================== REGLAGES ==================== */
+
+#reglages {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
     margin-top: 20px;
+}
+
+h4 {
+    font-size: 1.2em;
+    color: #005baa;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-left: 5px solid #005baa;
+    padding-left: 10px;
+}
+
+/* ==================== MODAL ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.85);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .machine-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .machine-details {
+        text-align: center;
+    }
+
+    .setting-block {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .setting-block img.setting-img {
+            max-width: 90%;
+        }
+    }
+    
+    .setting-details {
+        text-align: center;
+    }
 }

@@ -31,7 +31,7 @@
                 {% endif %}
                 
                 {% if current_user.access_level >= 3 %}
-                <a href="{{ url_for('admin.create_model') }}">Créer un modèle</a>
+                <a href="{{ url_for('admin.create_model') }}">Gérer les modèles</a>
                 {% endif %}
 
                 <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
