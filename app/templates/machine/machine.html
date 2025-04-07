@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_machine.css') }}">
 {% endblock %}
 
@@ -44,33 +43,45 @@
                 <div class="setting-details">
                     <p><strong>{{ setting.setting_name }}</strong> ({{ setting.setting_type }})</p>
                     {% if setting.setting_type == 'Num' %}
-                        {% for val in setting.default_values %}
-                            <p><strong>{{ val.name or "Nom inconnu" }} :</strong> {{ val.default_value }}</p>
-                        {% endfor %}
+                        <form method="POST" action="{{ url_for('machine.update_setting_value', machine_id=machine.ID_machines) }}">
+                            {% for val in setting.values if val.ID_machines == machine.ID_machines %}
+                                <p>
+                                    <strong>{{ val.name or "Nom inconnu" }} :</strong>
+                                    <input type="number" step="0.1" name="values[{{ val.ID_setting_value }}]" value="{{ val.value }}">
+                                </p>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-sm btn-success">💾 Enregistrer</button>
+                        </form>
                     {% elif setting.setting_type == 'Tab' %}
-                        <table class="table-setting">
-                            <thead>
-                                <tr>
-                                    <th>ST.</th>
-                                    {% for col in column_labels %}
-                                        <th>{{ col }}</th>
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row_label in row_labels %}
-                                    {% set row_index = loop.index0 %}
+                        <form method="POST" action="{{ url_for('machine.update_setting_value', machine_id=machine.ID_machines) }}">
+                            <input type="hidden" name="setting_id" value="{{ setting.ID_settings }}">
+                            <table class="table-setting">
+                                <thead>
                                     <tr>
-                                        <td>{{ row_label }}</td>
-                                        {% for col_index in range(column_labels | length) %}
-                                            <td>
-                                                {{ value_map[(setting.ID_settings, row_index, col_index)] if (setting.ID_settings, row_index, col_index) in value_map else '' }}
-                                            </td>
+                                        <th>ST.</th>
+                                        {% for col in column_labels %}
+                                            <th>{{ col }}</th>
                                         {% endfor %}
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {% for row_label in row_labels %}
+                                        {% set row_index = loop.index0 %}
+                                        <tr>
+                                            <td>{{ row_label }}</td>
+                                            {% for col_index in range(column_labels | length) %}
+                                                {% set key = (setting.ID_settings, row_index, col_index) %}
+                                                {% set val = value_map[key] if key in value_map else None %}
+                                                <td>
+                                                    <input type="number" name="values[{{ row_index }}][{{ col_index }}]" step="0.01" value="{{ value_map[(setting.ID_settings, row_index, col_index)] if (setting.ID_settings, row_index, col_index) in value_map else '' }}">
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-sm btn-success mt-2">💾 Enregistrer les réglages</button>
+                        </form>
                     {% endif %}
                 </div>
             </div>
@@ -81,29 +92,46 @@
 <div id="manuel" class="tab-content">
     <h3>Manuel</h3>
     {% if machine.manual %}
-        <p>Version : {{ machine.manual.manual_version }}</p>
-        <p><a href="{{ machine.manual.manual_link }}" target="_blank">📄 Télécharger le manuel</a></p>
+        <p><strong>Version :</strong> {{ machine.manual.manual_version }}</p>
+        <div style="height: 80vh;">
+            <iframe 
+                src="{{ url_for('static', filename=machine.manual.manual_link.replace('static/', '')) }}" 
+                width="100%" 
+                height="100%" 
+                style="border: none;">
+            </iframe>
+        </div>
     {% else %}
         <p>Aucun manuel disponible.</p>
     {% endif %}
-</div>
+    </div>
 
 <div id="historique" class="tab-content">
     <h3>Historique</h3>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Technicien</th>
-            <th>Remarque</th>
-        </tr>
-        {% for entry in machine.history %}
-            <tr>
-                <td>{{ entry.revisions_date }}</td>
-                <td>{{ entry.tech_name }}</td>
-                <td>{{ entry.remarks }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <form id="historyForm">
+        <table class="table-history">
+            <thead>
+                <tr>
+                    <th>Sélection</th>
+                    <th>Date</th>
+                    <th>Technicien</th>
+                    <th>Remarque</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in machine.history %}
+                <tr>
+                    <td><input type="checkbox" name="selected" value="{{ entry.ID_history }}"></td>
+                    <td>{{ entry.revisions_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ entry.tech_name }}</td>
+                    <td>{{ entry.remarks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    <button class="btn btn-outline-danger mt-2" onclick="deleteSelectedHistory()">🗑 Supprimer la sélection</button>
+    <button class="btn btn-outline-primary mt-2" onclick="openRevisionModal()">➕ Ajouter une révision</button>
 </div>
 
 <!-- Modal pour l’agrandissement d’image -->
@@ -111,6 +139,32 @@
     <span class="close">&times;</span>
     <img class="modal-content" id="modal-img">
 </div>
+
+<!-- Modal d'ajout de révision -->
+<div id="revisionModal" class="modal">
+    <div class="modal-content revision-modal">
+      <span class="close" onclick="closeRevisionModal()">&times;</span>
+      <h3>➕ Nouvelle Révision</h3>
+      <form method="POST" action="{{ url_for('machine.add_history', machine_id=machine.ID_machines) }}">
+        <div class="form-group">
+          <label for="revisions_date">📅 Date :</label>
+          <input type="date" name="revisions_date" class="form-control" required>
+        </div>
+  
+        <div class="form-group">
+          <label for="remarks">📝 Remarque :</label>
+          <textarea name="remarks" rows="4" class="form-control" placeholder="Entrez un commentaire..."></textarea>
+        </div>
+  
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+          <button type="button" class="btn btn-secondary" onclick="closeRevisionModal()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
 {% endblock %}
 
 {% block extra_js %}

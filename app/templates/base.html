@@ -9,51 +9,52 @@
     {% block extra_css %}{% endblock %}    
 </head>
 <body>
+    <div class="wrapper">
+        <!-- HEADER COMMUN -->
+        <header>
+            <div class="logo">
+                <a href="{{ url_for('client.clients') }}">
+                    <img src="{{ url_for('static', filename='images/general/logo.png') }}" alt="Mayekawa Logo">
+                </a>
+            </div>
+            
+            {% if current_user.is_authenticated %}
+            <div class="user-menu" id="user-menu">
+                <div class="user-bubble" onclick="toggleMenu()">
+                    {{ current_user.first_name.capitalize() }} {{ current_user.last_name.upper() }}
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <a href="{{ url_for('user.profile') }}">Mon Profil</a>
+                    
+                    {% if current_user.access_level >= 2 %}
+                    <a href="{{ url_for('user.create_user') }}">Créer un compte</a>
+                    {% endif %}
+                    
+                    {% if current_user.access_level >= 3 %}
+                    <a href="{{ url_for('admin.create_model') }}">Gérer les modèles</a>
+                    {% endif %}
 
-    <!-- HEADER COMMUN -->
-    <header>
-        <div class="logo">
-            <a href="{{ url_for('client.clients') }}">
-                <img src="{{ url_for('static', filename='images/general/logo.png') }}" alt="Mayekawa Logo">
-            </a>
-        </div>
+                    <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="login-link">
+                <a href="{{ url_for('auth.login') }}">Connexion</a> <!-- ✅ Ajout d'un lien de connexion si pas connecté -->
+            </div>
+            {% endif %}
+        </header>
+
+        <!-- CONTENU SPÉCIFIQUE À CHAQUE PAGE -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- FOOTER COMMUN -->
+        <footer>
+            <p>&copy; 2025 Mayekawa DAS - Tous droits réservés | <a href="{{ url_for('home.mentions_legales') }}" class="mention-legale">Mentions légales</a></p>
+        </footer>
         
-        {% if current_user.is_authenticated %}
-        <div class="user-menu" id="user-menu">
-            <div class="user-bubble" onclick="toggleMenu()">
-                {{ current_user.first_name.capitalize() }} {{ current_user.last_name.upper() }}
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu">
-                <a href="{{ url_for('user.profile') }}">Mon Profil</a>
-                
-                {% if current_user.access_level >= 2 %}
-                <a href="{{ url_for('user.create_user') }}">Créer un compte</a>
-                {% endif %}
-                
-                {% if current_user.access_level >= 3 %}
-                <a href="{{ url_for('admin.create_model') }}">Gérer les modèles</a>
-                {% endif %}
-
-                <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
-            </div>
-        </div>
-        {% else %}
-        <div class="login-link">
-            <a href="{{ url_for('auth.login') }}">Connexion</a> <!-- ✅ Ajout d'un lien de connexion si pas connecté -->
-        </div>
-        {% endif %}
-    </header>
-
-    <!-- CONTENU SPÉCIFIQUE À CHAQUE PAGE -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- FOOTER COMMUN -->
-    <footer>
-        <p>&copy; 2025 Mayekawa DAS - Tous droits réservés | <a href="{{ url_for('home.mentions_legales') }}" class="mention-legale">Mentions légales</a></p>
-    </footer>
-
+    </div>
     <script defer src="{{ url_for('static', filename='js/menu.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>

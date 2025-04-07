@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename 
-from app.models import db, ModeleMachine, Station, Settings, SettingValue, SettingDefaultValue
+from app.models import db, ModeleMachine, Station, Settings, SettingValue, SettingDefaultValue, Manual, Machines
 from app.forms import ModeleMachineForm, StationForm, SettingsForm
 import os
 from PIL import Image
@@ -25,7 +25,7 @@ def create_model():
     manual_folder = os.path.join(current_app.static_folder, 'manuel')
     manuals = [f for f in os.listdir(manual_folder) if f.endswith('.pdf')]
 
-    model_form.manual_file.choices = [(m, m) for m in manuals]
+
 
     # Création d’un nouveau modèle
     if model_form.validate_on_submit():
@@ -79,6 +79,7 @@ def create_model():
     return render_template(
         "admin/add_modele_machine.html",
         model_form=model_form,
+        manuals=manuals,
         station_form=station_form,
         setting_forms=setting_forms,
         model=model,
@@ -129,7 +130,6 @@ def add_setting(station_id):
                 img.verify()
                 image_file.seek(0)
             except Exception as e:
-                flash("❌ Le fichier n’est pas une image valide.", "danger")
                 return redirect(url_for('admin.create_model', model_id=Station.query.get_or_404(station_id).ID_model))
 
             image_filename = secure_filename(image_file.filename)
@@ -145,7 +145,6 @@ def add_setting(station_id):
         )
         db.session.add(setting)
         db.session.commit()
-        flash("✅ Réglage ajouté avec succès !", "success")
     else:
         print("❌ Formulaire invalide :", form.errors)#DEBUG
 
@@ -180,8 +179,6 @@ def add_setting_value(setting_id):
     db.session.add(setting_value)
     db.session.commit()
 
-    flash("✅ Valeur ajoutée", "success")
-
     return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
 
 
@@ -206,7 +203,51 @@ def update_table_values(setting_id):
             db.session.add(new_val)
 
     db.session.commit()
-    flash("✅ Valeurs par défaut mises à jour avec succès", "success")
+    return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
+
+@admin_bp.route('/assign_manual/<int:model_id>', methods=['POST'])
+@login_required
+def assign_manual(model_id):
+    selected_manual = request.form.get("manual_file")
+    if selected_manual:
+        manual = Manual.query.filter_by(manual_link=f"manuel/{selected_manual}").first()
+        if not manual:
+            manual = Manual(
+                manual_version="Auto",
+                manual_link=f"manuel/{selected_manual}",
+                manual_title=selected_manual.rsplit(".", 1)[0]
+            )
+            db.session.add(manual)
+            db.session.commit()
+
+        model = ModeleMachine.query.get_or_404(model_id)
+        machines = Machines.query.filter_by(ID_model=model.ID_model).all()
+        for machine in machines:
+            machine.ID_manual_link = manual.ID_manual_link
+        db.session.commit()
+
+    return redirect(url_for('admin.create_model', model_id=model_id))
+
+@admin_bp.route('/update_numeric/<int:setting_id>', methods=['POST'])
+@login_required
+def update_numeric_values(setting_id):
+    setting = Settings.query.get_or_404(setting_id)
+
+    # Supprimer les anciennes valeurs
+    SettingDefaultValue.query.filter_by(ID_settings=setting_id).delete()
+
+    for i in range(len(request.form) // 2):
+        name = request.form.get(f"name_{i}")
+        value = request.form.get(f"value_{i}", type=float)
+        if name is not None and value is not None:
+            new_val = SettingDefaultValue(
+                ID_settings=setting_id,
+                name=name,
+                default_value=value
+            )
+            db.session.add(new_val)
+
+    db.session.commit()
     return redirect(url_for('admin.create_model', model_id=setting.station.ID_model))
 
 #=====================================SUPPRESSION=====================================#
@@ -215,7 +256,6 @@ def update_table_values(setting_id):
 @login_required
 def delete_dynamic(obj_type, obj_id):
     if current_user.access_level < 3:
-        flash("🚫 Action non autorisée", "danger")
         return redirect(url_for('index'))
 
     model_id = None
@@ -233,11 +273,9 @@ def delete_dynamic(obj_type, obj_id):
 
         db.session.delete(obj)
         db.session.commit()
-        flash(f"✅ {obj_type.capitalize()} supprimé avec succès", "success")
 
     except Exception as e:
         db.session.rollback()
-        flash(f"❌ Erreur lors de la suppression : {str(e)}", "danger")
 
     if model_id:
         return redirect(url_for('admin.create_model', model_id=model_id))

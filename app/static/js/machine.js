@@ -22,3 +22,41 @@ function openImageModal(src) {
 function closeImageModal() {
     document.getElementById("imageModal").style.display = "none";
 }
+
+function openRevisionModal() {
+    document.getElementById("revisionModal").style.display = "flex";
+}
+
+function closeRevisionModal() {
+    document.getElementById("revisionModal").style.display = "none";
+}
+
+function deleteSelectedHistory() {
+    const form = document.getElementById('historyForm');
+    const selected = form.querySelectorAll('input[name="selected"]:checked');
+
+    if (selected.length === 0) {
+        alert("Veuillez sélectionner au moins une révision à supprimer.");
+        return;
+    }
+
+    if (!confirm("Voulez-vous vraiment supprimer les révisions sélectionnées ?")) {
+        return;
+    }
+
+    const data = new FormData();
+    selected.forEach(input => {
+        data.append('selected_ids', input.value);
+    });
+
+    fetch(window.location.pathname + "/delete_history", {
+        method: "POST",
+        body: data
+    }).then(res => {
+        if (res.ok) {
+            location.reload();
+        } else {
+            alert("Erreur serveur pendant la suppression.");
+        }
+    });
+}

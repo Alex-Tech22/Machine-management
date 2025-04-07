@@ -201,6 +201,7 @@ p {
 /*-------------------- Icônes --------------------*/
 .toggle-icon {
     font-size: 14px;
+    color: #000000;
 }
 
 /*-------------------- Formulaires --------------------*/
@@ -265,4 +266,13 @@ p {
     max-width: 70%;
     height: auto;
     object-fit: contain;
+}
+
+/*-------------------- Gestion des lignes --------------------*/
+.ligne-header {
+    display: flex;
+    color: black;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
 }

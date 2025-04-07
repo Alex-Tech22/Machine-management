@@ -14,7 +14,6 @@ def profile():
 @login_required
 def create_user():
     if current_user.access_level not in [2, 3]:
-        flash("❌ Vous n'avez pas l'autorisation de créer un utilisateur.", "danger")
         return redirect(url_for("client.client_page"))
 
     form = UserForm()
@@ -29,7 +28,6 @@ def create_user():
         new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        flash("✅ Utilisateur créé avec succès !", "success")
         return redirect(url_for("client.client_page"))
 
     return render_template("user/create_user.html", form=form)

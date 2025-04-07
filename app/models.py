@@ -3,6 +3,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from app import db
 from app import ph
+import os
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user_profile'
@@ -53,14 +54,13 @@ class Role(db.Model):
 class Machines(db.Model):
     __tablename__ = "machines"
 
-    # Colonnes
+    # colonnes
     ID_machines = db.Column(db.Integer, primary_key=True)
     machine_name = db.Column(db.String(100), nullable=False)
     serial_number = db.Column(db.String(10), unique=True, nullable=False)
     production_date = db.Column(db.Date, nullable=False)
     qrcode = db.Column(db.String(255), unique=True, nullable=True)
 
-    # Clés étrangères
     ID_production_ligne = db.Column(db.Integer, db.ForeignKey("production_ligne.ID_production_ligne"), nullable=True)
     ID_manual_link = db.Column(db.Integer, db.ForeignKey("manual.ID_manual_link"), nullable=True)
     ID_model = db.Column(db.Integer, db.ForeignKey("modele_machine.ID_model"), nullable=False)
@@ -71,8 +71,12 @@ class Machines(db.Model):
     manual = db.relationship("Manual", back_populates="machines")
     modele_machine = db.relationship("ModeleMachine", back_populates="machines")
 
+    # ✅ Relation
+    setting_values = db.relationship("SettingValue", back_populates="machine", cascade="all, delete-orphan")
+
     def __repr__(self):
         return f"<Machines {self.ID_machines}: {self.machine_name}>"
+
 
 class ProductionLigne(db.Model):
     __tablename__ = "production_ligne"
@@ -134,6 +138,13 @@ class ModeleMachine(db.Model):
     stations = db.relationship("Station", back_populates="modele_machines", cascade="all, delete-orphan")
     def __repr__(self):
         return f"<ModeleMachine {self.ID_model}: {self.model_name}>"
+    
+    @property
+    def manual_filename(self):
+        if self.machines and self.machines[0].manual:
+            return os.path.basename(self.machines[0].manual.manual_link)
+        return None
+
 
 class Station(db.Model):
     __tablename__ = "station"
@@ -169,7 +180,6 @@ class Settings(db.Model):
 class SettingValue(db.Model):
     __tablename__ = "setting_value"
 
-    # Colonnes
     ID_setting_value = db.Column(db.Integer, primary_key=True)
     row_index = db.Column(db.Integer, nullable=True)
     col_index = db.Column(db.Integer, nullable=True)
@@ -178,9 +188,11 @@ class SettingValue(db.Model):
 
     # Clés étrangères
     ID_settings = db.Column(db.Integer, db.ForeignKey("settings.ID_settings", ondelete="CASCADE"), nullable=False)
-    
+    ID_machines = db.Column(db.Integer, db.ForeignKey("machines.ID_machines", ondelete="CASCADE"), nullable=False)
+
     # Relations
     setting = db.relationship("Settings", back_populates="values")
+    machine = db.relationship("Machines", back_populates="setting_values")
 
 class SettingDefaultValue(db.Model):
     __tablename__ = "setting_default_value"

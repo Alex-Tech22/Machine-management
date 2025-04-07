@@ -1,12 +1,14 @@
 /* Général */
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
-    padding: 0;
     background:  rgb(209, 0, 59);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+    padding-bottom: 1rem;
 }
 
 /* HEADER */
@@ -24,13 +26,10 @@ header {
 
 /* FOOTER */
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
     background-color: black;
     color: white;
     text-align: center;
-    padding: 10px;
+    padding: 1rem;
 }
 
 footer p {
@@ -101,4 +100,10 @@ footer a {
 .mention-legale:hover {
     text-decoration: underline;
     color: #a30000;
+}
+
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }

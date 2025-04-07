@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_client.css') }}">
 {% endblock %}
 
@@ -92,5 +91,4 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/client.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {% endblock %}

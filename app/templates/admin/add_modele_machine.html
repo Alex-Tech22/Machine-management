@@ -1,5 +1,4 @@
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_add_modele.css') }}">
 {% endblock %}
 
@@ -36,32 +35,21 @@
     <!-- Panneau de droite : Détail du modèle -->
     <div class="main-panel">
         {% if model %}
-            <div class="delete-toolbar">
-                <button class="btn btn-danger" onclick="deleteSelected(event)">
-                    🗑 Supprimer l'élément sélectionné
-                </button>
-                <div class="form-group">
-                  {{ model_form.manual_file.label }}
-                  {{ model_form.manual_file(class="form-control") }}
-                  {% if model.manual_filename %}
-                      <p>📄 <a href="{{ url_for('static', filename='manuel/' ~ model.manual_filename) }}" target="_blank">
-                          Voir le manuel actuel
-                      </a></p>
-                  {% endif %}
-                </div> 
-            </div>
             <h2>🛠️ {{ model.model_name }}</h2>
-
-            <!-- Ajout d'une station -->
-            <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.add_station', model_id=model.ID_model) }}">
-                {{ station_form.hidden_tag() }}
-                <div class="form-row">
-                    {{ station_form.station_name.label }}
-                    {{ station_form.station_name(class="form-control") }}
-                    <button type="submit" class="btn btn-success">Ajouter station</button>
-                </div>
+            <!-- Sélection du manuel -->
+            <form method="POST" action="{{ url_for('admin.assign_manual', model_id=model.ID_model) }}">
+              {{ model_form.csrf_token }}
+              <div class="form-group">
+                  <label for="manual_file">Sélectionner un manuel PDF :</label>
+                  <select name="manual_file" class="form-control" onchange="this.form.submit();">
+                      <option value="">-- Choisir un manuel --</option>
+                      {% for pdf in manuals %}
+                          <option value="{{ pdf }}" {% if model.manual_filename == pdf %}selected{% endif %}>{{ pdf }}</option>
+                      {% endfor %}
+                  </select>
+              </div>
             </form>
-
+            
             <!-- Liste des stations + réglages -->
             <div class="stations-section">
                 {% for station in model.stations %}
@@ -94,9 +82,16 @@
                             <div class="setting-values" id="setting-values-{{ setting.ID_settings }}">
                               {% if setting.setting_type == 'Num' %}
                                 <!-- Affichage d'une valeur numérique simple -->
-                                {% for val in setting.default_values %}
-                                  <p><strong>{{ val.name or "Nom inconnu" }} :</strong> {{ val.default_value }}</p>
-                                {% endfor %}
+                                <form method="POST" action="{{ url_for('admin.update_numeric_values', setting_id=setting.ID_settings) }}">
+                                  {% for val in setting.default_values %}
+                                    <label>
+                                      <strong>{{ val.name or "Nom inconnu" }} :</strong>
+                                      <input type="number" step="0.01" name="value_{{ loop.index0 }}" value="{{ val.default_value }}" class="inline-input">
+                                      <input type="hidden" name="name_{{ loop.index0 }}" value="{{ val.name }}">
+                                    </label><br>
+                                  {% endfor %}
+                                  <button type="submit" class="btn btn-sm btn-success mt-1">💾 Enregistrer</button>
+                                </form>                                
                                 <button class="btn btn-sm btn-outline-primary" onclick="openValueModal('{{ setting.ID_settings }}', 'Num')">➕ Ajouter valeur</button>                            
                               {% elif setting.setting_type == 'Tab' %}
                               <form method="POST" action="{{ url_for('admin.update_table_values', setting_id=setting.ID_settings) }}">
@@ -198,6 +193,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

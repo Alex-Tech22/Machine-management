@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, jsonify, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
-from app.models import CustomersList, Machines, ProductionLigne
+from app.models import CustomersList, Machines, ProductionLigne, ModeleMachine, SettingValue
 from app import db
 from app.forms import AddClientForm, AddMachineForm, AddProductionLigneForm
 from app.config import UPLOAD_FOLDER
@@ -67,7 +67,6 @@ def add_client():
         db.session.add(new_client)
         db.session.commit()
         
-        flash(f"✅ Client {new_client.customers_name} ajouté avec succès !", "success")
         return redirect(url_for("client.clients"))  # Retour à la liste des clients
 
     return render_template("client/add_client.html", form=form)
@@ -109,7 +108,6 @@ def add_machine(client_id):
         print(f"DEBUG: ligne_id reçu = {ligne_id}")  # DEBUG
 
         if not ligne_id:
-            flash("❌ Erreur : Ligne de production non spécifiée.", "danger")
             return redirect(url_for("client.clients"))
 
         # Création de la machine
@@ -139,8 +137,24 @@ def add_machine(client_id):
         # 🔹 Mise à jour du chemin du QR Code en base de données
         new_machine.qrcode = f"qrcodes/{qr_filename}"
         db.session.commit()
+        # Copie des valeurs par défaut du modèle vers setting_value
+        model = ModeleMachine.query.get(new_machine.ID_model)
 
-        flash("✅ Machine ajoutée avec succès avec QR Code !", "success")
+        for station in model.stations:
+            for setting in station.settings:
+                for default in setting.default_values:
+                    new_value = SettingValue(
+                        ID_settings=setting.ID_settings,
+                        ID_machines=new_machine.ID_machines,
+                        row_index=default.row_index,
+                        col_index=default.col_index,
+                        value=default.default_value,
+                        name=default.name
+                    )
+                    db.session.add(new_value)
+        db.session.commit()
+
+
         return redirect(url_for("client.clients"))
 
     return redirect(url_for("client.clients"))
@@ -199,7 +213,6 @@ def add_production_ligne(client_id):
         )
         db.session.add(new_ligne)
         db.session.commit()
-        flash("✅ Ligne de production ajoutée avec succès !", "success")
         return redirect(url_for("client.clients"))
     selected_client = CustomersList.query.get(client_id) if client_id else None
     return render_template("client/client.html", 

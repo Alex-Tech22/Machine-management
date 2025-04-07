@@ -2,23 +2,17 @@
 
 // Ouvrir/Fermer les machines d'une ligne
 function toggleMachines(ligneId) {
-    let machinesDiv = document.getElementById("machines-" + ligneId);
-    let toggleIcon = document.querySelector(`[onclick="toggleMachines('${ligneId}')"] .toggle-icon`);
+    const machinesDiv = document.getElementById("machines-" + ligneId);
+    const toggleIcon = document.getElementById("toggle-icon-" + ligneId);
 
-    if (!machinesDiv) {
-        console.error(`❌ Erreur : L'élément machines-${ligneId} est introuvable.`);
+    if (!machinesDiv || !toggleIcon) {
+        console.error("❌ Éléments manquants pour ligne :", ligneId);
         return;
     }
 
-    document.querySelectorAll('.machines-container').forEach(container => {
-        if (container.id !== "machines-" + ligneId) {
-            container.style.display = "none";
-        }
-    });
-
-    let isVisible = machinesDiv.style.display === "block";
+    const isVisible = machinesDiv.style.display === "block";
     machinesDiv.style.display = isVisible ? "none" : "block";
-    toggleIcon.innerHTML = isVisible ? "▼" : "▲";
+    toggleIcon.textContent = isVisible ? "▼" : "▲";
 
     if (!isVisible) {
         loadMachines(ligneId);
@@ -85,12 +79,15 @@ function loadProductionLignes(clientId) {
             let div = document.createElement("div");
             div.className = "production-ligne-card";
             div.innerHTML = `
-                <p onclick="toggleMachines('${line.id}')">${line.name} <span class="toggle-icon">▼</span></p>
-                <button class="delete-btn" onclick="deleteProductionLigne('${line.id}')">🗑</button>
+                <div class="ligne-header">
+                    <span class="ligne-name">${line.name}</span>
+                    <span class="toggle-icon" id="toggle-icon-${line.id}" onclick="toggleMachines('${line.id}')" style="cursor: pointer;">▼</span>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteProductionLigne('${line.id}')">🗑</button>
+                </div>
                 <div id="machines-${line.id}" class="machines-container" style="display: none;"></div>
             `;
             productionContainer.appendChild(div);
-        });
+        });            
 
         document.getElementById("client-details").style.display = "block";
     })
