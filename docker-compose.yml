@@ -1,0 +1,79 @@
+version: "3"
+
+services:
+
+  flask-app:
+    image: flask-app-image
+    container_name: flask-app
+    restart: always
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      - mysql
+    networks:
+      - webproxy
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=User_dist
+      - DB_PASSWORD=Dragon14250
+      - DB_NAME=MY_DB
+      - SECRET_KEY=f5a75321ce02161fe24c7d569d20eed11dea2c1cc346d46d0e98a2c6cc71fba7
+      - SECURITY_PASSWORD_SALT=b6979539dfb213ac4903a95d3c10370873249a248b4f00920748837d588e5a3c
+      - MAIL_USERNAME=noreplymayetest@gmail.com
+      - MAIL_PASSWORD=bgve vqfi hqlo nzut
+      - DOMAIN=mayekawa.service.fr
+      - EMAIL=alexis.leroy14250@gmail.com
+      - VIRTUAL_HOST=mayekawa.service.com
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: MY_DB
+      MYSQL_USER: User_dist
+      MYSQL_PASSWORD: Dragon14250
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - webproxy
+      
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - /home/user/Documents/CDA/Machine-management/nginx:/etc/nginx/certs:ro
+
+    networks:
+      - webproxy
+
+  dnsmasq:
+    image: jpillora/dnsmasq
+    container_name: dnsmasq
+    restart: always
+    ports:
+      - "53:53/udp"
+    volumes:
+      - ./dnsmasq:/etc/dnsmasq:ro
+    cap_add:
+      - NET_ADMIN
+      
+volumes:
+  mysql-data:
+  nginx-certs:
+  nginx-vhost:
+  nginx-html:
+
+networks:
+  webproxy:
+    driver: bridge

@@ -70,8 +70,6 @@ class Machines(db.Model):
     production_ligne = db.relationship("ProductionLigne", back_populates="machines")
     manual = db.relationship("Manual", back_populates="machines")
     modele_machine = db.relationship("ModeleMachine", back_populates="machines")
-
-    # ✅ Relation
     setting_values = db.relationship("SettingValue", back_populates="machine", cascade="all, delete-orphan")
 
     def __repr__(self):

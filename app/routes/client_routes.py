@@ -8,6 +8,7 @@ from app.forms import AddClientForm, AddMachineForm, AddProductionLigneForm
 from app.config import UPLOAD_FOLDER
 from PIL import Image
 import qrcode
+
 client_bp = Blueprint('client', __name__)
 
 #======================================ROUTE CLIENT======================================#

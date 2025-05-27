@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 # Charger explicitement le fichier .env
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-load_dotenv(dotenv_path, override=True)  # ✅ Force l'utilisation de .env même si des variables système existent
+load_dotenv(dotenv_path, override=True)
 
 UPLOAD_FOLDER = "app/static/logo_client"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
@@ -17,9 +17,6 @@ class Config:
     SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
     if not SECURITY_PASSWORD_SALT:
         raise ValueError("❌ SECURITY_PASSWORD_SALT non défini dans .env !")
-    
-    # lien vers les logo client
-    UPLOAD_FOLDER = UPLOAD_FOLDER
 
     # Connexion MySQL via .env
     DB_USER = os.getenv('DB_USER')
@@ -27,6 +24,9 @@ class Config:
     DB_HOST = os.getenv('DB_HOST')
     DB_NAME = os.getenv('DB_NAME')
 
+    # lien vers les logo client
+    UPLOAD_FOLDER = UPLOAD_FOLDER
+    
     # Vérification que toutes les variables sont bien chargées
     if not all([DB_USER, DB_PASSWORD, DB_HOST, DB_NAME]):
         raise ValueError("❌ Erreur : Une ou plusieurs variables d'environnement sont manquantes dans .env")
@@ -42,8 +42,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")  # Ton email
-    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")  # Ton mot de passe
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
 
     # Configuration de l'url du serveur
     PREFERRED_URL_SCHEME = "https"

@@ -20,3 +20,7 @@ def send_reset_email(email, token):
 
     with current_app.app_context():
         current_app.extensions["mail"].send(msg)
+
+
+
+

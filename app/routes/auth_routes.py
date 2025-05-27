@@ -4,9 +4,10 @@ from app.forms import LoginForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, db
 from app.utils.email_utils import send_reset_email
 from itsdangerous import URLSafeTimedSerializer
-from argon2 import PasswordHasher
 
+from argon2 import PasswordHasher
 ph = PasswordHasher()
+
 auth_bp = Blueprint('auth', __name__)
 
 # Générer un token sécurisé pour la réinitialisation
@@ -14,7 +15,7 @@ def generate_reset_token(email):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     return serializer.dumps(email, salt=current_app.config['SECURITY_PASSWORD_SALT'])
 
-# Vérifier le token et récupérer l'email
+# Vérifier le token et récupère l'email
 def verify_reset_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
@@ -64,7 +65,7 @@ def reset_password(token):
     if not email:
         return redirect(url_for("auth.reset_request"))
 
-    with current_app.app_context():  # ✅ Ajout du contexte
+    with current_app.app_context():
         user = User.query.filter_by(email=email).first()
 
     if not user:
@@ -72,7 +73,7 @@ def reset_password(token):
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        with current_app.app_context():  # ✅ Ajout du contexte
+        with current_app.app_context():
             user.password = ph.hash(form.password.data)
             db.session.commit()
         return redirect(url_for("auth.login"))

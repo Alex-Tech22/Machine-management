@@ -42,7 +42,7 @@
 
 2. Créez et activez un environnement virtuel :
     ```bash
-    python -m venv venv
+    python3 -m venv venv
     source venv/bin/activate  # Sur Windows, utilisez `venv\Scripts\activate`
     ```
 
@@ -51,22 +51,69 @@
     pip install -r requirements.txt
     ```
 
-## Utilisation
+# 🐳Déploiment des conteneur docker
+## Installation de Docker
 
-1.
+1. Mise à jour des paquets
+    ```bash
+    sudo apt update
+    sudo apt upgrade
+    ```
 
+2. Installer les dépendances nécessaires
+    ```bash
+    sudo apt install apt-transport-https ca-certificates curl software-properties-common lsb-release
+    ```
 
-## Tests
+3. Ajouter la clé GPG officielle de Docker
+    ```bash
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg
+    ```
 
-Pour exécuter les tests unitaires, utilisez la commande suivante :
-```bash
-pytest
-```
+4. Ajouter le dépôt Docker stable
+    ```bash
+    echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    ```
 
-## Contribuer
+5. Installer Docker
+    ```bash
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io
+    ```
 
-Les contributions sont les bienvenues ! Veuillez soumettre une pull request pour toute modification majeure.
+## ⚙️Installation de docker-compose
 
-## Licence
+1. Télécharger Docker Compose
+    ```bash
+    sudo curl -L "https://github.com/docker/compose/releases/download/2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    ```
+    📌 Remplace 2.24.6 par la dernière version si besoin
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+2. Rendre le fichier exécutable
+    ```bash
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+## Installation de portainer
+
+1. Créer un volume Docker pour Portainer
+    ```bash
+    docker volume create portainer_data
+    ```
+
+2. Lancer le conteneur Portainer avec Docker
+    ```bash
+    docker run -d \
+    -p 9000:9000 \
+    -p 9443:9443 \
+    --name=portainer \
+    --restart=always \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v portainer_data:/data \
+    portainer/portainer-ce
+    ```
+
+3. Accéder à l’interface Web
+    ```bash
+    http://localhost:9000
+    ```

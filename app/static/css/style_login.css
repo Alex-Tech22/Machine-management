@@ -71,10 +71,9 @@
     background-color: darkred;
 }
 
-/* ✅ Responsive : Ajustement pour mobiles */
-@media (max-width: 600px) {
-    .login-container {
-        max-width: 90%;
-        padding: 15px;
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%;
     }
 }
