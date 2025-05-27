@@ -36,10 +36,11 @@
 
 1. Clonez le dépôt :
     ```bash
-    git clone https://github.com/votre-utilisateur/mon_projet_flask.git
-    cd mon_projet_flask
+    git clone https://github.com/Alex-Tech22/Machine-management
+    cd Machine-management
+    code .
     ```
-
+    
 2. Créez et activez un environnement virtuel :
     ```bash
     python3 -m venv venv
